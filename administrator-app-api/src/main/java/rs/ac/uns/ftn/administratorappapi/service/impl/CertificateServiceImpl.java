@@ -11,14 +11,17 @@ import org.bouncycastle.operator.ContentSigner;
 import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.administratorappapi.certificates.CertificateGenerator;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
 import rs.ac.uns.ftn.administratorappapi.model.*;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
 import rs.ac.uns.ftn.administratorappapi.repository.CertificateRepository;
+import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.storage.CertificateStorage;
+import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
 
 import java.math.BigInteger;
 import java.security.*;
@@ -34,11 +37,17 @@ public class CertificateServiceImpl implements CertificateService {
     @Autowired
     private CertificateRepository certificateRepository;
 
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private DataGenerator dataGenerator;
+
     public CertificateServiceImpl() {
         Security.addProvider(new BouncyCastleProvider());
     }
 
-    public X509Certificate generateCertificate(Subject subject, Issuer issuer) {
+    public X509Certificate generateCertificate(SubjectData subject, IssuerData issuer) {
         try {
             JcaContentSignerBuilder builder = new JcaContentSignerBuilder("SHA256WithRSAEncryption");
 
@@ -149,6 +158,38 @@ public class CertificateServiceImpl implements CertificateService {
         return null;
     }
 
+    @Override
+    public HttpStatus issueTo(String username) {
+        User user = userRepository.findByUsername(username);
+        KeyPair keyPairIssuer = dataGenerator.generateKeyPair();
 
 
+        SubjectData subject = dataGenerator.generateSubject(user);
+        IssuerData issuer = dataGenerator.generateIssuer(keyPairIssuer.getPrivate());
+
+        generateCert(subject, issuer);
+
+        return HttpStatus.OK;
+    }
+
+    public void generateCert(SubjectData subjectData, IssuerData issuerData) {
+        KeyPair keyPair = generateKeyPair();
+
+        X509Certificate x509Certificate;
+        x509Certificate = CertificateGenerator.generateCertificate(subjectData, issuerData);
+
+        certificateStorage.storeCertificateChan(new X509Certificate[]{x509Certificate}, keyPair.getPrivate());
+        certificateRepository.save(new Certificate(
+                subjectData.getSerialNumber(),
+                CertificateType.INTERMEDIATE,
+                "",
+                "",
+                "",
+                false,
+                null,
+                "",
+                subjectData.getStartDate(),
+                subjectData.getEndDate()
+        ));
+    }
 }

@@ -64,7 +64,6 @@ public class User implements UserDetails {
     }
 
     public User(Long id, String username, String firstName, String lastName, String email, String password, Timestamp lastPasswordResetDate, List<Authority> authorities) {
-        this.id = id;
         this.username = username;
         this.firstName = firstName;
         this.lastName = lastName;
@@ -72,6 +71,15 @@ public class User implements UserDetails {
         this.password = password;
         this.lastPasswordResetDate = lastPasswordResetDate;
         this.authorities = authorities;
+    }
+
+    public User(String username, String firstName, String lastName, String email, String password, Timestamp lastPasswordResetDate) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.lastPasswordResetDate = lastPasswordResetDate;
     }
 
     public Long getId() {
@@ -163,5 +171,21 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    @Override
+    public String toString() {
+        return "User{" +
+                "id=" + id +
+                ", username='" + username + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", password='" + password + '\'' +
+                ", lastPasswordResetDate=" + lastPasswordResetDate +
+                ", enabled=" + enabled +
+                ", authorities=" + authorities +
+                ", permissions=" + permissions +
+                '}';
     }
 }

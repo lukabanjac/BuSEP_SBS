@@ -2,7 +2,7 @@ package rs.ac.uns.ftn.administratorappapi.security.keystore;
 
 import org.bouncycastle.asn1.x500.X500Name;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateHolder;
-import rs.ac.uns.ftn.administratorappapi.model.Issuer;
+import rs.ac.uns.ftn.administratorappapi.model.IssuerData;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ public class KeyStoreReader {
         }
     }
 
-    public Issuer readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
+    public IssuerData readIssuerFromStore(String keyStoreFile, String alias, char[] password, char[] keyPass) {
         try {
             BufferedInputStream in  = new BufferedInputStream(new FileInputStream(keyStoreFile));
             keyStore.load(in, password);
@@ -34,7 +34,7 @@ public class KeyStoreReader {
             PrivateKey privateKey = (PrivateKey) keyStore.getKey(alias, keyPass);
 
             X500Name issuerName = new JcaX509CertificateHolder((X509Certificate) cert).getSubject();
-            return new Issuer(privateKey, issuerName);
+            return new IssuerData(privateKey, issuerName);
         } catch (KeyStoreException | NoSuchAlgorithmException | CertificateException
                 | UnrecoverableKeyException | IOException e) {
             e.printStackTrace();

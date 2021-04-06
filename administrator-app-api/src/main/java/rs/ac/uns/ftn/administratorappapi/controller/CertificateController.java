@@ -3,33 +3,34 @@ package rs.ac.uns.ftn.administratorappapi.controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
-import rs.ac.uns.ftn.administratorappapi.model.Issuer;
-import rs.ac.uns.ftn.administratorappapi.model.Subject;
+import rs.ac.uns.ftn.administratorappapi.model.IssuerData;
+import rs.ac.uns.ftn.administratorappapi.model.SubjectData;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
 
+import javax.websocket.server.PathParam;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 
 @RestController
+@RequestMapping("api/certificates")
 public class CertificateController {
 
     @Autowired
     CertificateService certificateService;
 
-    @GetMapping("createCertificate")
+    @Autowired
+    DataGenerator dataGenerator;
+
+    @GetMapping("create")
     public ResponseEntity<String> createCerttificate() {
-        DataGenerator dataGen = new DataGenerator();
 
-        Subject subject = dataGen.generateSubject();
+        SubjectData subject = dataGenerator.generateSubjectExample();
 
-        KeyPair keyPairIssuer = dataGen.generateKeyPair();
-        Issuer issuer = dataGen.generateIssuer(keyPairIssuer.getPrivate());
+        KeyPair keyPairIssuer = dataGenerator.generateKeyPair();
+        IssuerData issuer = dataGenerator.generateIssuer(keyPairIssuer.getPrivate());
 
         X509Certificate certificate = certificateService.generateCertificate(subject, issuer);
 
@@ -47,10 +48,16 @@ public class CertificateController {
     }
 
 
-    @PostMapping("/generate")
+    @PostMapping("generate")
     public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
         System.out.println(certificateGenerateDTO);
         certificateService.generate(certificateGenerateDTO);
         return new ResponseEntity<>("Certificate successfully generated!", HttpStatus.OK);
+    }
+
+
+    @PostMapping("issueTo/{username}")
+    public ResponseEntity<String> issueTo(@PathVariable String username) {
+        return new ResponseEntity<String>(certificateService.issueTo(username));
     }
 }

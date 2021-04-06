@@ -23,6 +23,11 @@ public class IssuerData {
         this.serialNumber = serialNumber;
     }
 
+    public IssuerData(PrivateKey issuerKey, X500Name build) {
+        this.privateKey = issuerKey;
+        this.x500name = build;
+    }
+
     public X500Name getX500name() {
         return x500name;
     }
