@@ -11,7 +11,6 @@ import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
 import rs.ac.uns.ftn.administratorappapi.model.Issuer;
 import rs.ac.uns.ftn.administratorappapi.model.Subject;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
-import rs.ac.uns.ftn.administratorappapi.service.impl.CertificateServiceImpl;
 import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
 
 import java.security.KeyPair;
@@ -35,14 +34,14 @@ public class CertificateController {
         X509Certificate certificate = certificateService.generateCertificate(subject, issuer);
 
         String resData = "Radi";
-        resData = resData.concat("\n===== Podaci o izdavacu sertifikata =====");
+        resData = resData.concat("\n===== Podaci o izdavacu sertifikata =====\n");
         resData = resData.concat(certificate.getIssuerX500Principal().getName());
-        resData = resData.concat("\n===== Podaci o vlasniku sertifikata =====");
+        resData = resData.concat("\n===== Podaci o vlasniku sertifikata =====\n");
         resData = resData.concat(certificate.getSubjectX500Principal().getName());
-        resData = resData.concat("\n===== Sertifikat =====");
-        resData = resData.concat("-------------------------------------------------------");
+        resData = resData.concat("\n===== Sertifikat =====\n");
+        resData = resData.concat("\n-------------------------------------------------------\n");
         resData = resData.concat(certificate.toString());
-        resData = resData.concat("-------------------------------------------------------");
+        resData = resData.concat("\n-------------------------------------------------------\n");
 
         return new ResponseEntity<String>(resData, HttpStatus.OK);
     }
