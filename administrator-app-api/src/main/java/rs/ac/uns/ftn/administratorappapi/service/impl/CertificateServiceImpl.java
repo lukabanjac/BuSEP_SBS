@@ -27,6 +27,7 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.util.List;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -170,6 +171,11 @@ public class CertificateServiceImpl implements CertificateService {
         generateCert(subject, issuer);
 
         return HttpStatus.OK;
+    }
+
+    @Override
+    public List<Certificate> getAll() {
+        return certificateRepository.findAll();
     }
 
     public void generateCert(SubjectData subjectData, IssuerData issuerData) {

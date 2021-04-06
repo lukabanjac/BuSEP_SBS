@@ -52,6 +52,8 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date expiringAt;
 
+    public Certificate() {
+    }
 
     public Certificate(long id, String serialNumber, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
         this.id = id;
