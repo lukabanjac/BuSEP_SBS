@@ -3,7 +3,7 @@ package rs.ac.uns.ftn.administratorappapi.dto;
 public class IssuerDataDTO {
 
     private String serialNumber;
-    private String x500Name;
+    private String x500name;
 
     public IssuerDataDTO(){
 
@@ -11,7 +11,7 @@ public class IssuerDataDTO {
 
     public IssuerDataDTO(String serialNumber, String x500Name) {
         this.serialNumber = serialNumber;
-        this.x500Name = x500Name;
+        this.x500name = x500Name;
     }
 
     public String getSerialNumber() {
@@ -23,10 +23,18 @@ public class IssuerDataDTO {
     }
 
     public String getX500Name() {
-        return x500Name;
+        return x500name;
     }
 
     public void setX500Name(String x500Name) {
-        this.x500Name = x500Name;
+        this.x500name = x500Name;
+    }
+
+    @Override
+    public String toString() {
+        return "IssuerDataDTO{" +
+                "serialNumber='" + serialNumber + '\'' +
+                ", x500Name='" + x500name + '\'' +
+                '}';
     }
 }

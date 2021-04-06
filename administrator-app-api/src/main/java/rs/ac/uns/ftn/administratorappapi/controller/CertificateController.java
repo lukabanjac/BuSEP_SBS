@@ -50,6 +50,7 @@ public class CertificateController {
 
     @PostMapping("/generate")
     public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
+        System.out.println(certificateGenerateDTO);
         certificateService.generate(certificateGenerateDTO);
         return new ResponseEntity<>("Certificate successfully generated!", HttpStatus.OK);
     }

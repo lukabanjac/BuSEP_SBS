@@ -41,4 +41,13 @@ public class CertificateGenerateDTO {
     public void setCertificateType(CertificateType certificateType) {
         this.certificateType = certificateType;
     }
+
+    @Override
+    public String toString() {
+        return "CertificateGenerateDTO{" +
+                "issuerDataDTO=" + issuerDataDTO +
+                ", subjectDataDTO=" + subjectDataDTO +
+                ", certificateType=" + certificateType +
+                '}';
+    }
 }

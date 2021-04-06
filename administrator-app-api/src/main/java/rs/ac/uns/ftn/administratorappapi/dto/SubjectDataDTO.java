@@ -53,4 +53,14 @@ public class SubjectDataDTO {
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
     }
+
+    @Override
+    public String toString() {
+        return "SubjectDataDTO{" +
+                "x500name='" + x500name + '\'' +
+                ", serialNumber='" + serialNumber + '\'' +
+                ", startDate=" + startDate +
+                ", endDate=" + endDate +
+                '}';
+    }
 }
