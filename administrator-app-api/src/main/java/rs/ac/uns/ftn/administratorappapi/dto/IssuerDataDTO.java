@@ -1,0 +1,32 @@
+package rs.ac.uns.ftn.administratorappapi.dto;
+
+public class IssuerDataDTO {
+
+    private String serialNumber;
+    private String x500Name;
+
+    public IssuerDataDTO(){
+
+    }
+
+    public IssuerDataDTO(String serialNumber, String x500Name) {
+        this.serialNumber = serialNumber;
+        this.x500Name = x500Name;
+    }
+
+    public String getSerialNumber() {
+        return serialNumber;
+    }
+
+    public void setSerialNumber(String serialNumber) {
+        this.serialNumber = serialNumber;
+    }
+
+    public String getX500Name() {
+        return x500Name;
+    }
+
+    public void setX500Name(String x500Name) {
+        this.x500Name = x500Name;
+    }
+}

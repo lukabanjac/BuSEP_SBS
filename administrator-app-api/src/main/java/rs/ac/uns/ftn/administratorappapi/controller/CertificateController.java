@@ -4,7 +4,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
+import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
 import rs.ac.uns.ftn.administratorappapi.model.Issuer;
 import rs.ac.uns.ftn.administratorappapi.model.Subject;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
@@ -42,5 +45,12 @@ public class CertificateController {
         resData = resData.concat("-------------------------------------------------------");
 
         return new ResponseEntity<String>(resData, HttpStatus.OK);
+    }
+
+
+    @PostMapping("/generate")
+    public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
+        certificateService.generate(certificateGenerateDTO);
+        return new ResponseEntity<>("Certificate successfully generated!", HttpStatus.OK);
     }
 }
