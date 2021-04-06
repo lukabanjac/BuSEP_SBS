@@ -2,8 +2,9 @@ package rs.ac.uns.ftn.administratorappapi;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.security.servlet.SecurityAutoConfiguration;
 
-@SpringBootApplication
+@SpringBootApplication(exclude={SecurityAutoConfiguration.class}) // TODO: privremeno disableovan spring security, zavrsiti kasnije
 public class AdministratorAppApiApplication {
 
 	public static void main(String[] args) {
