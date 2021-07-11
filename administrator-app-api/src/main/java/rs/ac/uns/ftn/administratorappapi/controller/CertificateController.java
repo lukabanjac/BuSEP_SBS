@@ -2,16 +2,22 @@ package rs.ac.uns.ftn.administratorappapi.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import rs.ac.uns.ftn.administratorappapi.dto.CertificateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
+import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
+import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
 import rs.ac.uns.ftn.administratorappapi.model.IssuerData;
 import rs.ac.uns.ftn.administratorappapi.model.SubjectData;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
 
 import javax.websocket.server.PathParam;
+import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.cert.X509Certificate;
 import java.util.List;
@@ -26,29 +32,30 @@ public class CertificateController {
     @Autowired
     DataGenerator dataGenerator;
 
-    @GetMapping("create")
-    public ResponseEntity<String> createCerttificate() {
+    @RequestMapping(value = "generate",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<CertificateDTO> generate(@RequestBody CertificateGenerateRequestDTO request) {
+        /*if (!(this.authService.hasPermission(PermissionTableSeed.ISSUE_ROOT_CERTIFICATE) && request.getCertificateType() == CertificateType.ROOT ||
+                this.authService.hasPermission(PermissionTableSeed.ISSUE_INTERMEDIATE_CERTIFICATE) && request.getCertificateType() == CertificateType.INTERMEDIATE ||
+                this.authService.hasPermission(PermissionTableSeed.ISSUE_USER_CERTIFICATE) && request.getCertificateType() == CertificateType.USER)) {
+            throw new AccessDeniedException("User has no permission to issue " + request.getCertificateType().name() + " certificates.");
+        }*/
 
-        SubjectData subject = dataGenerator.generateSubjectExample();
 
-        KeyPair keyPairIssuer = dataGenerator.generateKeyPair();
-        IssuerData issuer = dataGenerator.generateIssuer(keyPairIssuer.getPrivate());
+        String serialNumber = request.getCertificateType() != CertificateType.ROOT
+                ? this.certificateService.findBySerialNumber( new BigInteger(request.getIssuerSerialNumber())).getSerialNumber().toString()
+                : "";
 
-        X509Certificate certificate = certificateService.generateCertificate(subject, issuer);
+        Certificate c = certificateService.createCertificate(
+                request.getSubjectDTO(),
+                serialNumber,
+                request.getCertificateType()
+        );
 
-        String resData = "Radi";
-        resData = resData.concat("\n===== Podaci o izdavacu sertifikata =====\n");
-        resData = resData.concat(certificate.getIssuerX500Principal().getName());
-        resData = resData.concat("\n===== Podaci o vlasniku sertifikata =====\n");
-        resData = resData.concat(certificate.getSubjectX500Principal().getName());
-        resData = resData.concat("\n===== Sertifikat =====\n");
-        resData = resData.concat("\n-------------------------------------------------------\n");
-        resData = resData.concat(certificate.toString());
-        resData = resData.concat("\n-------------------------------------------------------\n");
-
-        return new ResponseEntity<String>(resData, HttpStatus.OK);
+        return new ResponseEntity<>(new CertificateDTO(c), HttpStatus.OK);
     }
-
 
     @PostMapping("generate")
     public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
@@ -58,10 +65,13 @@ public class CertificateController {
     }
 
 
+    /*
     @PostMapping("issueTo/{username}")
     public ResponseEntity<String> issueTo(@PathVariable String username) {
         return new ResponseEntity<String>(certificateService.issueTo(username));
     }
+
+     */
 
     @GetMapping("getAll")
     public ResponseEntity<List<Certificate>> getAll() {

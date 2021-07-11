@@ -37,6 +37,7 @@ public class DataGenerator {
         return new IssuerData(issuerKey, builder.build());
     }
 
+    /*
     public SubjectData generateSubject(User user) {
         try {
             KeyPair keyPairSubject = generateKeyPair();
@@ -121,5 +122,5 @@ public class DataGenerator {
             e.printStackTrace();
         }
         return null;
-    }
+    }*/
 }

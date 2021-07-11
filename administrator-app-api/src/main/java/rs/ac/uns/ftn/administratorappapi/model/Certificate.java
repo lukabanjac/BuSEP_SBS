@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
 import javax.persistence.*;
+import java.math.BigInteger;
 import java.util.Date;
 
 @Entity
@@ -9,12 +10,19 @@ public class Certificate {
 
 
     @Id
-    @Column(name = "id", nullable = false)
+    @Column(name = "id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
     @Column(name="serial_number", nullable = false, unique = true)
-    private String serialNumber;
+    private BigInteger serialNumber;
+
+
+    @Column(name="ca_serial_number", nullable = false, unique = true)
+    private BigInteger caSerialNumber;
+
+    @Column(name="is_ca", nullable = false)
+    private Boolean ca;
 
     @Column(name="type", nullable = false)
     private CertificateType type;
@@ -55,9 +63,38 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(long id, String serialNumber, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
+    public Certificate(BigInteger serialNumber,
+                       BigInteger caSerialNumber,
+                       CertificateType type,
+                       Boolean CA,
+                       String certFilePath,
+                       String keyStoreFilePath,
+                       String trustStoreFilePath,
+                       Boolean revoked,
+                       Date revokedAt,
+                       String revokeReason,
+                       Date issuedAt,
+                       Date expiringAt)
+    {
+        this.serialNumber = serialNumber;
+        this.caSerialNumber = caSerialNumber;
+        this.type = type;
+        this.ca = CA;
+        this.certFilePath = certFilePath;
+        this.keyStoreFilePath = keyStoreFilePath;
+        this.trustStoreFilePath = trustStoreFilePath;
+        this.revoked = revoked;
+        this.revokedAt = revokedAt;
+        this.revokeReason = revokeReason;
+        this.issuedAt = issuedAt;
+        this.expiringAt = expiringAt;
+    }
+
+    public Certificate(Long id, BigInteger serialNumber, BigInteger caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
         this.id = id;
         this.serialNumber = serialNumber;
+        this.caSerialNumber = caSerialNumber;
+        this.ca = ca;
         this.type = type;
         this.certFilePath = certFilePath;
         this.keyStoreFilePath = keyStoreFilePath;
@@ -69,32 +106,35 @@ public class Certificate {
         this.expiringAt = expiringAt;
     }
 
-    public Certificate(String serialNumber, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
-        this.serialNumber = serialNumber;
-        this.type = type;
-        this.certFilePath = certFilePath;
-        this.keyStoreFilePath = keyStoreFilePath;
-        this.trustStoreFilePath = trustStoreFilePath;
-        this.revoked = revoked;
-        this.revokedAt = revokedAt;
-        this.revokeReason = revokeReason;
-        this.issuedAt = issuedAt;
-        this.expiringAt = expiringAt;
-    }
-
-    public long getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getSerialNumber() {
+    public BigInteger getSerialNumber() {
         return serialNumber;
     }
 
-    public void setSerialNumber(String serialNumber) {
+    public void setCaSerialNumber(BigInteger caSerialNumber) {
+        this.caSerialNumber = caSerialNumber;
+    }
+
+    public BigInteger getCaSerialNumber() {
+        return caSerialNumber;
+    }
+
+    public Boolean isCa() {
+        return ca;
+    }
+
+    public void setCa(Boolean ca) {
+        this.ca = ca;
+    }
+
+    public void setSerialNumber(BigInteger serialNumber) {
         this.serialNumber = serialNumber;
     }
 
@@ -130,7 +170,7 @@ public class Certificate {
         this.trustStoreFilePath = trustStoreFilePath;
     }
 
-    public Boolean getRevoked() {
+    public Boolean isRevoked() {
         return revoked;
     }
 
