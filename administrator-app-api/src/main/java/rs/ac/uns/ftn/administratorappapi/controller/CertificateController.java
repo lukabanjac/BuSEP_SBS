@@ -57,12 +57,12 @@ public class CertificateController {
         return new ResponseEntity<>(new CertificateDTO(c), HttpStatus.OK);
     }
 
-    @PostMapping("generate")
-    public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
-        System.out.println(certificateGenerateDTO);
-        certificateService.generate(certificateGenerateDTO);
-        return new ResponseEntity<>("Certificate successfully generated!", HttpStatus.OK);
-    }
+//    @PostMapping("generate")
+//    public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
+//        System.out.println(certificateGenerateDTO);
+//        certificateService.generate(certificateGenerateDTO);
+//        return new ResponseEntity<>("Certificate successfully generated!", HttpStatus.OK);
+//    }
 
 
     /*
@@ -70,7 +70,7 @@ public class CertificateController {
     public ResponseEntity<String> issueTo(@PathVariable String username) {
         return new ResponseEntity<String>(certificateService.issueTo(username));
     }
-
++
      */
 
     @GetMapping("getAll")
