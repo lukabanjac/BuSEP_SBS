@@ -18,7 +18,7 @@ public class Certificate {
     private BigInteger serialNumber;
 
 
-    @Column(name="ca_serial_number", nullable = false, unique = true)
+    @Column(name="ca_serial_number", nullable = false)
     private BigInteger caSerialNumber;
 
     @Column(name="is_ca", nullable = false)

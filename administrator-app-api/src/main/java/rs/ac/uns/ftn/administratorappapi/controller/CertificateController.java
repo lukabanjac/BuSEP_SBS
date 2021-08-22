@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
+import rs.ac.uns.ftn.administratorappapi.exception.ParentCertificateExpireException;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
 import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
 import rs.ac.uns.ftn.administratorappapi.model.IssuerData;
@@ -43,20 +44,26 @@ public class CertificateController {
             throw new AccessDeniedException("User has no permission to issue " + request.getCertificateType().name() + " certificates.");
         }*/
 
+        Certificate parentCertificate;
+        String issuerSerialNumber = "";
 
-        String serialNumber = request.getCertificateType() != CertificateType.ROOT
-                ? this.certificateService.findBySerialNumber( new BigInteger(request.getIssuerSerialNumber())).getSerialNumber().toString()
-                : "";
+        if(request.getCertificateType() != CertificateType.ROOT) {
+            parentCertificate = this.certificateService.findBySerialNumber(new BigInteger(request.getIssuerSerialNumber()));
+            issuerSerialNumber = parentCertificate.getSerialNumber().toString();
+        }
+
+//        if (parentCertificate.getExpiringAt().before(request.getExpiringAt())) {
+//            throw new ParentCertificateExpireException();
+//        }
 
         Certificate c = certificateService.createCertificate(
                 request.getSubjectDTO(),
-                serialNumber,
+                issuerSerialNumber,
                 request.getCertificateType()
         );
 
         return new ResponseEntity<>(new CertificateDTO(c), HttpStatus.OK);
     }
-
 //    @PostMapping("generate")
 //    public ResponseEntity<String> generate(@RequestBody CertificateGenerateDTO certificateGenerateDTO){
 //        System.out.println(certificateGenerateDTO);
@@ -77,4 +84,15 @@ public class CertificateController {
     public ResponseEntity<List<Certificate>> getAll() {
         return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
     }
+
+    @PostMapping("revoke")
+    public ResponseEntity<Certificate> revoke(@RequestBody CertificateDTO certificate) {
+        return new ResponseEntity<>(certificateService.revokeCertificate(new BigInteger(certificate.getSerialNumber()), certificate.getRevokeReason()), HttpStatus.OK);
+    }
+
+    @GetMapping("getOne/{serialNumber}")
+    public ResponseEntity<Certificate> getOne(@PathVariable String serialNumber) {
+        return new ResponseEntity<>(certificateService.findBySerialNumber(new BigInteger(serialNumber)), HttpStatus.OK);
+    }
+
 }

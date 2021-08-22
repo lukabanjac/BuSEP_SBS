@@ -23,6 +23,7 @@ public interface CertificateService {
     //SubjectData generateSubjectData(PublicKey subjectKey, CertificateGenerateDTO certificateGenerateDTO);
     //HttpStatus issueTo(String username);
     List<Certificate> getAll();
+    Certificate revokeCertificate(BigInteger serialNumber, String revokeReason);
     Certificate findBySerialNumber(BigInteger serialNumber);
     Certificate createCertificate(SubjectDTO subjectDTO, String issuerSerialNumber, CertificateType type);
 }

@@ -60,6 +60,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        http.csrf().disable();
         http.authorizeRequests()
                 // Most Restrictive To Least Restrictive in terms of order
                 .antMatchers("static/css", "static/js").permitAll() //Static files permit for all users
