@@ -255,7 +255,39 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public Certificate revokeCertificate(BigInteger serialNumber, String revokeReason) {
+
+        Optional<Certificate> opt = this.certificateRepository.findBySerialNumber(serialNumber);
+        opt.orElseThrow(() -> new EntityNotFoundException(Certificate.class, "serialNumber", serialNumber.toString()));
+
+        List<Certificate> childCertificates = this.certificateRepository.findAllByCaSerialNumberEquals(serialNumber);
+        Date now = new Date();
+
+        // revoke top level certificate
+        Certificate cert = opt.get();
+        if(cert.getType() != CertificateType.ROOT) {
+            cert.setRevoked(true);
+            cert.setRevokeReason(revokeReason);
+            cert.setRevokedAt(now);
+
+            this.certificateRepository.save(cert);
+
+            // revoke all child certificates also
+            for (Certificate child : childCertificates) {
+                child.setRevokedAt(now);
+                child.setRevoked(true);
+                child.setRevokeReason("Parent revoked because: " + revokeReason);
+            }
+
+            this.certificateRepository.saveAll(childCertificates);
+        }
+
+        return cert;
+    }
+
+    @Override
     public Certificate findBySerialNumber(BigInteger serialNumber) {
+        System.out.println("serialNumber = " + serialNumber);
         Optional<Certificate> opt = this.certificateRepository.findBySerialNumber(serialNumber);
         return opt.orElseThrow(() -> new EntityNotFoundException(Certificate.class, "serialNumber", serialNumber.toString()));
     }
@@ -282,7 +314,9 @@ public class CertificateServiceImpl implements CertificateService {
         else if (type == CertificateType.INTERMEDIATE) {
             keyPair = generateKeyPair(true);
             subject = generateSubjectData(keyPair.getPublic(), subjectDN, true);
+            System.out.println(subject.getSerialNumber());
             issuer = this.certificateStorage.getIssuerDataBySerialNumber(issuerSerialNumber);
+            System.out.println(issuer.getSerialNumber());
             certificate = generateCertificate(subject, issuer, true);
         }
         else {
@@ -301,6 +335,12 @@ public class CertificateServiceImpl implements CertificateService {
                             certificate.getSerialNumber().toString(),
                             type);
 
+        System.out.println("subject");
+        System.out.println(subject.getSerialNumber());
+
+
+        System.out.println("issuer");
+        System.out.println(issuer.getSerialNumber());
         Certificate c = new Certificate(
                 subject.getSerialNumber(),
                 issuer.getSerialNumber(),
@@ -315,6 +355,7 @@ public class CertificateServiceImpl implements CertificateService {
                 subject.getStartDate(),
                 subject.getEndDate());
 
+        System.out.println(c.toString());
         certificateRepository.save(c);
         return c;
     }

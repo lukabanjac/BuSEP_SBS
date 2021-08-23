@@ -15,4 +15,6 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     Optional<Certificate> findBySerialNumber(BigInteger id);
 
+    List<Certificate> findAllByCaSerialNumberEquals(BigInteger parentId);
+
 }

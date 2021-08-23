@@ -2,6 +2,8 @@ package rs.ac.uns.ftn.administratorappapi.dto;
 
 import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
 
+import java.util.Date;
+
 public class CertificateGenerateRequestDTO {
     private String issuerSerialNumber;
     private String commonName;
@@ -10,15 +12,26 @@ public class CertificateGenerateRequestDTO {
     private String country;
     private CertificateType certificateType;
 
+    public Date getExpiringAt() {
+        return expiringAt;
+    }
+
+    public void setExpiringAt(Date expiringAt) {
+        this.expiringAt = expiringAt;
+    }
+
+    private Date expiringAt;
+
     public CertificateGenerateRequestDTO() {}
 
-    public CertificateGenerateRequestDTO(String issuerSerialNumber, String commonName, String organizationUnit, String organization, String country, CertificateType certificateType) {
+    public CertificateGenerateRequestDTO(String issuerSerialNumber, String commonName, String organizationUnit, String organization, String country, CertificateType certificateType, Date expiringAt) {
         this.issuerSerialNumber = issuerSerialNumber;
         this.commonName = commonName;
         this.organizationUnit = organizationUnit;
         this.organization = organization;
         this.country = country;
         this.certificateType = certificateType;
+        this.expiringAt = expiringAt;
     }
 
     public SubjectDTO getSubjectDTO() {
