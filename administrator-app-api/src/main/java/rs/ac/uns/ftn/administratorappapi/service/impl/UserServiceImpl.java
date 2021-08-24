@@ -3,13 +3,19 @@ package rs.ac.uns.ftn.administratorappapi.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.administratorappapi.dto.UserDTO;
+import rs.ac.uns.ftn.administratorappapi.exception.DataDTONotValidException;
+import rs.ac.uns.ftn.administratorappapi.model.Admin;
 import rs.ac.uns.ftn.administratorappapi.model.Authority;
+import rs.ac.uns.ftn.administratorappapi.model.Doctor;
 import rs.ac.uns.ftn.administratorappapi.model.User;
 import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.UserService;
 
+import javax.xml.crypto.Data;
 import java.sql.Timestamp;
 import java.sql.Date;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -19,20 +25,32 @@ public class UserServiceImpl implements UserService {
     UserRepository userRepository;
 
     @Override
-    public User register(UserDTO userDto) {
-        System.out.println(userDto);
+    public User register(UserDTO userDto){
+        User user = null;
 
-        User user = new User(
-                userDto.getUsername(),
-                userDto.getFirstName(),
-                userDto.getLastName(),
-                userDto.getEmail(),
-                userDto.getPassword(),
-                new Timestamp(new java.util.Date().getTime())
-        );
+        try{
+            if(userDto.getType().toString().equals("ADMIN")){
+                user = new Admin();
+                user.setPassword(userDto.getPassword());
+            }else if(userDto.getType().toString().equals("DOCTOR")){
+                user = new Doctor();
+                user.setPassword(userDto.getPassword());
+            }else{
+                throw new DataDTONotValidException("User type not valid!");
+            }
 
-        System.out.println(user);
-        user.setEnabled(false);
+            user.setUsername(userDto.getUsername());
+            user.setEmail(userDto.getEmail());
+            user.setFirstName(userDto.getFirstName());
+            user.setLastName(userDto.getLastName());
+            user.setLastPasswordResetDate(new Timestamp(System.currentTimeMillis()));
+
+
+        }catch (DataDTONotValidException e){
+            System.out.println("Data not valid exception!");
+        }
+
+        user.setEnabled(true);
         return userRepository.save(user);
     }
 

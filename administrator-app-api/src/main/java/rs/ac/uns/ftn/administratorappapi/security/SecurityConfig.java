@@ -68,6 +68,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("static/css", "static/js").permitAll() //Static files permit for all users
                 .antMatchers("/admin").hasRole("ADMIN") // .hasAnyRole("USER","ADMIN")
                 .antMatchers("/user").hasAnyRole("USER", "ADMIN")
+                .antMatchers("api/user/register").hasAuthority("SUPERADMIN")
                 .antMatchers("/").permitAll()
                 .and().formLogin().and().cors().and().csrf().disable();;
     }

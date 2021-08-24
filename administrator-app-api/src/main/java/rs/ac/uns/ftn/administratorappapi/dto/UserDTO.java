@@ -9,6 +9,10 @@ public class UserDTO {
 
     private String email;
 
+    private String password;
+
+    private UserTypeDTO type;
+
     public UserDTO() {
     }
 
@@ -18,6 +22,15 @@ public class UserDTO {
         this.lastName = lastName;
         this.email = email;
         this.password = password;
+    }
+
+    public UserDTO(String username, String firstName, String lastName, String email, String password, UserTypeDTO type) {
+        this.username = username;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.password = password;
+        this.type = type;
     }
 
     public String getUsername() {
@@ -60,7 +73,13 @@ public class UserDTO {
         this.password = password;
     }
 
-    private String password;
+    public UserTypeDTO getType() {
+        return type;
+    }
+
+    public void setType(UserTypeDTO type) {
+        this.type = type;
+    }
 
     @Override
     public String toString() {
