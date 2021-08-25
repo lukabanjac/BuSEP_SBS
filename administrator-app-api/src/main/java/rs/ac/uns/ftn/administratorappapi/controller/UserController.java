@@ -89,7 +89,7 @@ public class UserController {
         User user = (User)authentication.getPrincipal();
 
         System.out.println("email: "  + user.getEmail() + "\npassword: " + user.getPassword());
-        String jws = tokenHelper.generateToken(user.getEmail());
+        String jws = tokenHelper.generateToken(user);
         int expiresIn = tokenHelper.getExpiredIn();
 
         ArrayList<Authority> authorities = user.getAuthorities().stream().map(authority->(Authority) authority).collect(Collectors.toCollection(ArrayList::new));

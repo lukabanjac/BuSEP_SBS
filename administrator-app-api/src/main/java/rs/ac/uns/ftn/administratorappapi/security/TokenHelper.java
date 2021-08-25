@@ -1,11 +1,15 @@
 package rs.ac.uns.ftn.administratorappapi.security;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.servlet.http.HttpServletRequest;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
@@ -36,9 +40,23 @@ public class TokenHelper {
 
 	private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
-	public String generateToken(String username) {
-		return Jwts.builder().setIssuer(APP_NAME).setSubject(username).setIssuedAt(timeProvider.now())
-				.setExpiration(generateExpirationDate()).signWith(SIGNATURE_ALGORITHM, SECRET).compact();
+	public String generateToken(User user) {
+		List<HashMap<String,String>> roles = user.getAuthorities().stream()
+				.map(a -> {
+					HashMap<String, String> hm = new HashMap<>();
+					hm.put("authority", ((GrantedAuthority) a).getAuthority());
+					return hm;
+				})
+				.collect(Collectors.toList());
+
+
+		return Jwts.builder()
+				.setIssuer(APP_NAME)
+				.setSubject(user.getEmail())
+				.setIssuedAt(timeProvider.now())
+				.setExpiration(generateExpirationDate())
+				.claim("roles",roles)
+				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
 
 	private Date generateExpirationDate() {
