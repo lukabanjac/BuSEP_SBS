@@ -5,17 +5,11 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.administratorappapi.dto.UserDTO;
 import rs.ac.uns.ftn.administratorappapi.exception.DataDTONotValidException;
 import rs.ac.uns.ftn.administratorappapi.model.Admin;
-import rs.ac.uns.ftn.administratorappapi.model.Authority;
 import rs.ac.uns.ftn.administratorappapi.model.Doctor;
 import rs.ac.uns.ftn.administratorappapi.model.User;
 import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.UserService;
-
-import javax.xml.crypto.Data;
 import java.sql.Timestamp;
-import java.sql.Date;
-import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service

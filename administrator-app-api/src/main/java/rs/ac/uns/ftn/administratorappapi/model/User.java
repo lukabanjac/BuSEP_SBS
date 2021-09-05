@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import org.hibernate.annotations.DiscriminatorOptions;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -52,6 +53,11 @@ public class User implements UserDetails {
     @JoinTable(name = "user_permission", joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "permission_id", referencedColumnName = "id"))
     private List<Permission> permissions;
+
+
+    @OneToOne
+    @JsonBackReference
+    private Certificate certificate;
 
 
 

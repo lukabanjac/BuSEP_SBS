@@ -5,14 +5,16 @@ public class SubjectDTO {
     private String organizationUnit;
     private String organization;
     private String country;
+    private String city;
 
     public SubjectDTO() {}
 
-    public SubjectDTO(String commonName, String organizationUnit, String organization, String country) {
+    public SubjectDTO(String commonName, String organizationUnit, String organization, String country, String city) {
         this.commonName = commonName;
         this.organizationUnit = organizationUnit;
         this.organization = organization;
         this.country = country;
+        this.city = city;
     }
 
     public String getCommonName() {
@@ -45,5 +47,13 @@ public class SubjectDTO {
 
     public void setCountry(String country) {
         this.country = country;
+    }
+
+    public String getCity() {
+        return city;
+    }
+
+    public void setCity(String city) {
+        this.city = city;
     }
 }

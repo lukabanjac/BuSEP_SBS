@@ -6,7 +6,6 @@ import org.bouncycastle.asn1.x500.X500NameBuilder;
 import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
-import org.bouncycastle.cert.X509CertificateHolder;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
@@ -17,16 +16,19 @@ import org.bouncycastle.operator.OperatorCreationException;
 import org.bouncycastle.operator.jcajce.JcaContentSignerBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
+import org.springframework.context.annotation.Lazy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-import reactor.core.publisher.BaseSubscriber;
-import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateDTO;
+import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
+import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.SubjectDTO;
 import rs.ac.uns.ftn.administratorappapi.exception.EntityNotFoundException;
 import rs.ac.uns.ftn.administratorappapi.exception.PkiMalfunctionException;
 import rs.ac.uns.ftn.administratorappapi.model.*;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
 import rs.ac.uns.ftn.administratorappapi.repository.CertificateRepository;
+import rs.ac.uns.ftn.administratorappapi.repository.CertificateRequestRepository;
+import rs.ac.uns.ftn.administratorappapi.repository.TrustedOrganisationRepository;
 import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.storage.CertificateStorage;
@@ -49,6 +51,12 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Autowired
     private CertificateRepository certificateRepository;
+
+    @Autowired
+    private CertificateRequestRepository  certificateRequestRepository;
+
+    @Autowired
+    private TrustedOrganisationRepository trustedOrganisationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -136,51 +144,65 @@ public class CertificateServiceImpl implements CertificateService {
         return null;
     }
 
-    @Override
-    public void generate(CertificateGenerateDTO certificateGenerateDTO) {
 
-    }
+    public MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO){
 
-
-
-    /*public void generate(CertificateGenerateDTO certificateGenerateDTO) {
-
-        KeyPair keyPair = generateKeyPair();
-
-        IssuerData issuerData;
-        SubjectData subjectData;
-        X509Certificate x509Certificate;
-
-        subjectData = generateSubjectData(keyPair.getPublic(), certificateGenerateDTO);
+        if(requestDTO.getIssuerSerialNumber().trim().equalsIgnoreCase("") ||
+                requestDTO.getCity().trim().equalsIgnoreCase("") ||
+                requestDTO.getCountry().trim().equalsIgnoreCase("") ||
+                requestDTO.getOrganization().trim().equalsIgnoreCase("") ||
+                requestDTO.getOrganizationUnit().trim().equalsIgnoreCase("") ||
+                requestDTO.getSecretWord1().trim().equalsIgnoreCase("") ||
+                requestDTO.getSecretWord2().trim().equalsIgnoreCase("") ||
+                requestDTO.getSecretWord3().trim().equalsIgnoreCase("")
+        ){
+            return new MessageDTO(false, "All fields must be filled!");
+        }
 
 
-        if(certificateGenerateDTO.getCertificateType() == CertificateType.ROOT) {
-            issuerData = new IssuerData(keyPair.getPrivate(), subjectData.getX500name(), keyPair.getPublic(), new BigInteger(subjectData.getSerialNumber()));
-        }else{
-            issuerData = certificateStorage.getIssuerDataBySerialNumber(certificateGenerateDTO.getIssuerDataDTO().getSerialNumber());
+        Certificate issuerCertificate = certificateRepository
+                .findBySerialNumber(BigInteger.valueOf(Long.parseLong(requestDTO.getIssuerSerialNumber()))).get();
+
+        if(issuerCertificate == null){
+            return new MessageDTO(false, "Invalid issuer serial number!");
+        }
+
+        if(issuerCertificate.getType() == CertificateType.LEAF){
+            return new MessageDTO(false, "Invalid issuer certificate type!");
         }
 
 
 
-        x509Certificate = CertificateGenerator.generateCertificate(subjectData, issuerData);
-        certificateStorage.storeCertificateChan(new X509Certificate[]{x509Certificate}, keyPair.getPrivate());
+        TrustedOrganisation to = trustedOrganisationRepository
+                .findByCountryAndCityAndOrganisationAndOrganisationUnit
+                        (
+                                requestDTO.getCountry(),
+                                requestDTO.getCity(),
+                                requestDTO.getOrganization(),
+                                requestDTO.getOrganizationUnit()
+                        );
 
-        certificateRepository.save(new Certificate(
-                subjectData.getSerialNumber(),
-                certificateGenerateDTO.getCertificateType(),
-                "",
-                "",
-                "",
-                false,
-                null,
-                "",
-                certificateGenerateDTO.getSubjectDataDTO().getStartDate(),
-                certificateGenerateDTO.getSubjectDataDTO().getEndDate()
 
-        ));
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
+        if(!to.getSecretWord1().equals(encoder.encode(requestDTO.getSecretWord1())) ||
+        !to.getSecretWord2().equals(encoder.encode(requestDTO.getSecretWord2())) ||
+        !to.getSecretWord3().equals(encoder.encode(requestDTO.getSecretWord3()))){
+            return new MessageDTO(false, "Invalid secret words!");
+        }
 
-    }*/
 
+        CertificateRequest cr = new CertificateRequest();
+        cr.setIssuerSerialNumber(requestDTO.getIssuerSerialNumber());
+        cr.setCountry(requestDTO.getCountry());
+        cr.setCity(requestDTO.getCity());
+        cr.setOrganisation(requestDTO.getOrganization());
+        cr.setOrganisationUnit(requestDTO.getOrganizationUnit());
+        cr.setStatus(CertificateRequestStatus.PENDING);
+
+        certificateRequestRepository.save(cr);
+
+        return new MessageDTO(true, "Request was successfully sent :)");
+    }
 
     private KeyPair generateKeyPair(boolean isCA) {
         try {
@@ -199,31 +221,6 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
 
-
-    /*
-    public SubjectData generateSubjectData(PublicKey subjectKey, CertificateGenerateDTO certificateGenerateDTO) {
-        try {
-
-
-            X500NameBuilder builder = new X500NameBuilder(BCStyle.INSTANCE);
-            builder.addRDN(BCStyle.CN, certificateGenerateDTO.getSubjectDataDTO().getX500name());
-            if (certificateGenerateDTO.getCertificateType() != CertificateType.DEVICE){
-                builder.addRDN(BCStyle.UID, System.currentTimeMillis()+"");
-            }
-
-
-            long now = System.currentTimeMillis();
-
-
-            return new SubjectData(subjectKey, builder.build(), String.valueOf(now),
-                    certificateGenerateDTO.getSubjectDataDTO().getStartDate() , certificateGenerateDTO.getSubjectDataDTO().getEndDate());
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return null;
-    }
-    */
-
     private SubjectData generateSubjectData(PublicKey publicKey, X500Name subjectDN, boolean isCA) {
         long now = System.currentTimeMillis();
         Date startDate = new Date(now);
@@ -233,21 +230,6 @@ public class CertificateServiceImpl implements CertificateService {
         Date endDate = calendar.getTime();
         return new SubjectData(publicKey, subjectDN, new BigInteger(Long.toString(now)), startDate, endDate);
     }
-
-    /*
-    @Override
-    public HttpStatus issueTo(String username) {
-        User user = userRepository.findByUsername(username);
-        KeyPair keyPairIssuer = dataGenerator.generateKeyPair();
-
-
-        SubjectData subject = dataGenerator.generateSubject(user);
-        IssuerData issuer = dataGenerator.generateIssuer(keyPairIssuer.getPrivate());
-
-        //generateCert(subject, issuer);
-
-        return HttpStatus.OK;
-    }*/
 
     @Override
     public List<Certificate> getAll() {
@@ -294,10 +276,10 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public Certificate createCertificate(
-            SubjectDTO subjectDTO,
+            CertificateGenerateRequestDTO request,
             String issuerSerialNumber,
             CertificateType type) {
-
+        SubjectDTO subjectDTO = request.getSubjectDTO();
         X500Name subjectDN = this.subjectDTOToX500Name(subjectDTO);
         KeyPair keyPair;
         SubjectData subject;
@@ -335,17 +317,13 @@ public class CertificateServiceImpl implements CertificateService {
                             certificate.getSerialNumber().toString(),
                             type);
 
-        System.out.println("subject");
-        System.out.println(subject.getSerialNumber());
 
-
-        System.out.println("issuer");
-        System.out.println(issuer.getSerialNumber());
+        BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Certificate c = new Certificate(
                 subject.getSerialNumber(),
                 issuer.getSerialNumber(),
                 type,
-                type != CertificateType.USER,
+                type != CertificateType.LEAF,
                 filePathsOfDistributionFiles[0],
                 filePathsOfDistributionFiles[1],
                 filePathsOfDistributionFiles[2],
@@ -353,7 +331,8 @@ public class CertificateServiceImpl implements CertificateService {
                 null,
                 null,
                 subject.getStartDate(),
-                subject.getEndDate());
+                subject.getEndDate()
+        );
 
         System.out.println(c.toString());
         certificateRepository.save(c);
@@ -375,40 +354,10 @@ public class CertificateServiceImpl implements CertificateService {
         if (!subjectDTO.getCountry().isEmpty()) {
             nameBuilder.addRDN(BCStyle.C, subjectDTO.getCountry());
         }
+        if (!subjectDTO.getCity().isEmpty()) {
+            nameBuilder.addRDN(BCStyle.L, subjectDTO.getCity());
+        }
         return nameBuilder.build();
     }
 
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*public void generateCert(SubjectData subjectData, IssuerData issuerData) {
-        KeyPair keyPair = generateKeyPair();
-
-        X509Certificate x509Certificate;
-        x509Certificate = CertificateGenerator.generateCertificate(subjectData, issuerData);
-
-        certificateStorage.storeCertificateChan(new X509Certificate[]{x509Certificate}, keyPair.getPrivate());
-        certificateRepository.save(new Certificate(
-                subjectData.getSerialNumber(),
-                CertificateType.INTERMEDIATE,
-                "",
-                "",
-                "",
-                false,
-                null,
-                "",
-                subjectData.getStartDate(),
-                subjectData.getEndDate()
-        ));
-    }*/

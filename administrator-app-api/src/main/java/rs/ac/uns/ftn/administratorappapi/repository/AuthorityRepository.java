@@ -5,6 +5,5 @@ import org.springframework.stereotype.Repository;
 import rs.ac.uns.ftn.administratorappapi.model.Authority;
 
 
-@Repository
 public interface AuthorityRepository extends JpaRepository<Authority, Long> {
 }

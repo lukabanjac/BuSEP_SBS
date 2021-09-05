@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import java.math.BigInteger;
 import java.util.Date;
@@ -60,6 +62,11 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date expiringAt;
 
+
+    @OneToOne
+    @JsonManagedReference
+    private User user;
+
     public Certificate() {
     }
 
@@ -74,7 +81,8 @@ public class Certificate {
                        Date revokedAt,
                        String revokeReason,
                        Date issuedAt,
-                       Date expiringAt)
+                       Date expiringAt
+    )
     {
         this.serialNumber = serialNumber;
         this.caSerialNumber = caSerialNumber;
@@ -89,6 +97,7 @@ public class Certificate {
         this.issuedAt = issuedAt;
         this.expiringAt = expiringAt;
     }
+
 
     public Certificate(Long id, BigInteger serialNumber, BigInteger caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
         this.id = id;
@@ -105,6 +114,8 @@ public class Certificate {
         this.issuedAt = issuedAt;
         this.expiringAt = expiringAt;
     }
+
+
 
     public Long getId() {
         return id;
@@ -209,4 +220,13 @@ public class Certificate {
     public void setExpiringAt(Date expiringAt) {
         this.expiringAt = expiringAt;
     }
+
+    public Boolean getCa() {
+        return ca;
+    }
+
+    public Boolean getRevoked() {
+        return revoked;
+    }
+
 }
