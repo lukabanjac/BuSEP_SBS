@@ -62,7 +62,6 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date expiringAt;
 
-
     @OneToOne
     @JsonManagedReference
     private User user;
