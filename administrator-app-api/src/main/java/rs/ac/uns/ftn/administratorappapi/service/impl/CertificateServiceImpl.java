@@ -159,14 +159,14 @@ public class CertificateServiceImpl implements CertificateService {
         }
 
 
-        Certificate issuerCertificate = certificateRepository
-                .findBySerialNumber(BigInteger.valueOf(Long.parseLong(requestDTO.getIssuerSerialNumber()))).get();
+        Optional<Certificate> issuerCertificate = certificateRepository
+                .findBySerialNumber(new BigInteger(requestDTO.getIssuerSerialNumber()));
 
-        if(issuerCertificate == null){
+        if(!issuerCertificate.isPresent()){
             return new MessageDTO(false, "Invalid issuer serial number!");
         }
 
-        if(issuerCertificate.getType() == CertificateType.LEAF){
+        if(issuerCertificate.get().getType() == CertificateType.LEAF){
             return new MessageDTO(false, "Invalid issuer certificate type!");
         }
 
