@@ -1,6 +1,8 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
@@ -15,6 +17,11 @@ public class Admin extends User {
     @JoinColumn(name = "certificate_id", referencedColumnName = "id")
     private Certificate certificate;
 
+    @OneToOne
+    @JsonBackReference
+    private TrustedOrganisation trustedOrganisation;
+
+
 
     public Admin(){
         super();
@@ -27,5 +34,13 @@ public class Admin extends User {
     public Admin(String username, String firstName, String lastName, String email, String password, Timestamp lastPasswordResetDate, Certificate certificate) {
         super(username, firstName, lastName, email, password, lastPasswordResetDate);
         this.certificate = certificate;
+    }
+
+    public TrustedOrganisation getTrustedOrganisation() {
+        return trustedOrganisation;
+    }
+
+    public void setTrustedOrganisation(TrustedOrganisation trustedOrganisation) {
+        this.trustedOrganisation = trustedOrganisation;
     }
 }

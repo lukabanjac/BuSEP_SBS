@@ -15,7 +15,7 @@ INSERT INTO hospital.user_permission (user_id, permission_id) values (1, 1);
 
 
 -- secretWords: tajniKljuc1, tajniKljuc2, tajniKljuc3..
-INSERT INTO hospital.trusted_organisation (country, city, organisation, organisation_unit, secret_word_1, secret_word_2, secret_word_3) values ('Srb', 'RS', 'Vlada RS', 'Ministarstvo Zdravlja', 'a', 'a', 'a');
+INSERT INTO hospital.trusted_organisation (country, city, organisation, organisation_unit, secret_word_1, secret_word_2, secret_word_3, admin_id) values ('Srb', 'RS', 'Vlada RS', 'Ministarstvo Zdravlja', '$2a$10$aQuKX9jc3HcYfzq1heWi9euEyjYejyDXF7Gw/ut8.VIn6ByJiG1WO', '$2a$10$ED6Kdeb4vmRhCRvDzleXy.zq5z5t28lW92wJNGAC64Z0vqNx0C.um', '$2a$10$v4C1P1pwFMbSAiJktQ7oWecI3k.AfWlwT/ZTQWhYn4YdN26Id3XmK', 1);
 
 INSERT INTO hospital.certificate (serial_number, ca_serial_number, is_ca, type, cert_file_path, key_store_file_path, trust_store_file_path, revoked, revoked_at, revoke_reason, issued_at, expiring_at) values
  (null, null, true, 'ROOT', null, null, null, false, null, null, null, null);

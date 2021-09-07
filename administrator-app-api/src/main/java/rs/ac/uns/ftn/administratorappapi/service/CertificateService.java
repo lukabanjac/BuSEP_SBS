@@ -5,10 +5,7 @@ import org.springframework.stereotype.Service;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.SubjectDTO;
-import rs.ac.uns.ftn.administratorappapi.model.Certificate;
-import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
-import rs.ac.uns.ftn.administratorappapi.model.IssuerData;
-import rs.ac.uns.ftn.administratorappapi.model.SubjectData;
+import rs.ac.uns.ftn.administratorappapi.model.*;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -22,9 +19,10 @@ public interface CertificateService {
     //KeyPair generateKeyPair();
     //SubjectData generateSubjectData(PublicKey subjectKey, CertificateGenerateDTO certificateGenerateDTO);
     //HttpStatus issueTo(String username);
+    List<CertificateRequest> listCertificateRequestsByIssuerId(Long id);
     List<Certificate> getAll();
-    Certificate revokeCertificate(BigInteger serialNumber, String revokeReason);
-    Certificate findBySerialNumber(BigInteger serialNumber);
+    Certificate revokeCertificate(String serialNumber, String revokeReason);
+    Certificate findBySerialNumber(String serialNumber);
     Certificate createCertificate(CertificateGenerateRequestDTO request, String issuerSerialNumber, CertificateType type);
     MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO);
 }

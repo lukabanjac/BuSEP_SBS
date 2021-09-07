@@ -151,6 +151,7 @@ public class CertificateServiceImpl implements CertificateService {
                 requestDTO.getCountry().trim().equalsIgnoreCase("") ||
                 requestDTO.getOrganization().trim().equalsIgnoreCase("") ||
                 requestDTO.getOrganizationUnit().trim().equalsIgnoreCase("") ||
+                requestDTO.getUserId().toString().trim().equalsIgnoreCase("") ||
                 requestDTO.getSecretWord1().trim().equalsIgnoreCase("") ||
                 requestDTO.getSecretWord2().trim().equalsIgnoreCase("") ||
                 requestDTO.getSecretWord3().trim().equalsIgnoreCase("")
@@ -160,7 +161,7 @@ public class CertificateServiceImpl implements CertificateService {
 
 
         Optional<Certificate> issuerCertificate = certificateRepository
-                .findBySerialNumber(new BigInteger(requestDTO.getIssuerSerialNumber()));
+                .findBySerialNumber(requestDTO.getIssuerSerialNumber());
 
         if(!issuerCertificate.isPresent()){
             return new MessageDTO(false, "Invalid issuer serial number!");
@@ -183,12 +184,23 @@ public class CertificateServiceImpl implements CertificateService {
 
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
-        if(!to.getSecretWord1().equals(encoder.encode(requestDTO.getSecretWord1())) ||
-        !to.getSecretWord2().equals(encoder.encode(requestDTO.getSecretWord2())) ||
-        !to.getSecretWord3().equals(encoder.encode(requestDTO.getSecretWord3()))){
+        System.out.println("\n\n");
+
+        System.out.println(encoder.encode(requestDTO.getSecretWord1()));
+        System.out.println(to.getSecretWord1());
+        System.out.println("\n\n");
+
+        if(!encoder.matches(requestDTO.getSecretWord1(), to.getSecretWord1()) ||
+        !encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()) ||
+        !encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3())){
             return new MessageDTO(false, "Invalid secret words!");
+
         }
 
+        Optional<User> user = this.userRepository.findById(requestDTO.getUserId());
+        if(!user.isPresent()){
+            return new MessageDTO(false, "User id not found");
+        }
 
         CertificateRequest cr = new CertificateRequest();
         cr.setIssuerSerialNumber(requestDTO.getIssuerSerialNumber());
@@ -197,6 +209,7 @@ public class CertificateServiceImpl implements CertificateService {
         cr.setOrganisation(requestDTO.getOrganization());
         cr.setOrganisationUnit(requestDTO.getOrganizationUnit());
         cr.setStatus(CertificateRequestStatus.PENDING);
+        cr.setUser(user.get());
 
         certificateRequestRepository.save(cr);
 
@@ -236,7 +249,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Certificate revokeCertificate(BigInteger serialNumber, String revokeReason) {
+    public Certificate revokeCertificate(String serialNumber, String revokeReason) {
 
         Optional<Certificate> opt = this.certificateRepository.findBySerialNumber(serialNumber);
         opt.orElseThrow(() -> new EntityNotFoundException(Certificate.class, "serialNumber", serialNumber.toString()));
@@ -267,10 +280,16 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public Certificate findBySerialNumber(BigInteger serialNumber) {
+    public Certificate findBySerialNumber(String serialNumber) {
         System.out.println("serialNumber = " + serialNumber);
         Optional<Certificate> opt = this.certificateRepository.findBySerialNumber(serialNumber);
         return opt.orElseThrow(() -> new EntityNotFoundException(Certificate.class, "serialNumber", serialNumber.toString()));
+    }
+
+    @Override
+    public List<CertificateRequest> listCertificateRequestsByIssuerId(Long id){
+        List<CertificateRequest> list = this.certificateRequestRepository.findByIssuerSerialNumber(id);
+        return list;
     }
 
     @Override
@@ -317,10 +336,11 @@ public class CertificateServiceImpl implements CertificateService {
                             type);
 
 
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         Certificate c = new Certificate(
-                subject.getSerialNumber(),
-                issuer.getSerialNumber(),
+                subject.getSerialNumber().toString(),
+                issuer.getSerialNumber().toString(),
                 type,
                 type != CertificateType.LEAF,
                 filePathsOfDistributionFiles[0],
@@ -332,7 +352,8 @@ public class CertificateServiceImpl implements CertificateService {
                 subject.getStartDate(),
                 subject.getEndDate()
         );
-
+        Optional<User> user = this.userRepository.findById(request.getUserId());
+        c.setUser(user.get());
         System.out.println(c.toString());
         certificateRepository.save(c);
         return c;

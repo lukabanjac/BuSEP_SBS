@@ -17,11 +17,11 @@ public class Certificate {
     private Long id;
 
     @Column(name="serial_number", nullable = false, unique = true)
-    private BigInteger serialNumber;
+    private String serialNumber;
 
 
     @Column(name="ca_serial_number", nullable = false)
-    private BigInteger caSerialNumber;
+    private String caSerialNumber;
 
     @Column(name="is_ca", nullable = false)
     private Boolean ca;
@@ -62,6 +62,8 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date expiringAt;
 
+
+
     @OneToOne
     @JsonManagedReference
     private User user;
@@ -69,8 +71,8 @@ public class Certificate {
     public Certificate() {
     }
 
-    public Certificate(BigInteger serialNumber,
-                       BigInteger caSerialNumber,
+    public Certificate(String serialNumber,
+                       String caSerialNumber,
                        CertificateType type,
                        Boolean CA,
                        String certFilePath,
@@ -98,7 +100,7 @@ public class Certificate {
     }
 
 
-    public Certificate(Long id, BigInteger serialNumber, BigInteger caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
+    public Certificate(Long id, String serialNumber, String caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.caSerialNumber = caSerialNumber;
@@ -124,15 +126,15 @@ public class Certificate {
         this.id = id;
     }
 
-    public BigInteger getSerialNumber() {
+    public String getSerialNumber() {
         return serialNumber;
     }
 
-    public void setCaSerialNumber(BigInteger caSerialNumber) {
+    public void setCaSerialNumber(String caSerialNumber) {
         this.caSerialNumber = caSerialNumber;
     }
 
-    public BigInteger getCaSerialNumber() {
+    public String getCaSerialNumber() {
         return caSerialNumber;
     }
 
@@ -144,7 +146,7 @@ public class Certificate {
         this.ca = ca;
     }
 
-    public void setSerialNumber(BigInteger serialNumber) {
+    public void setSerialNumber(String serialNumber) {
         this.serialNumber = serialNumber;
     }
 
@@ -228,4 +230,11 @@ public class Certificate {
         return revoked;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 }

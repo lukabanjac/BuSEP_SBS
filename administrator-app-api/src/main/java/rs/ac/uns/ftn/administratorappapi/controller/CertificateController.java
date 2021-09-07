@@ -9,6 +9,7 @@ import rs.ac.uns.ftn.administratorappapi.dto.CertificateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
+import rs.ac.uns.ftn.administratorappapi.model.CertificateRequest;
 import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
@@ -35,7 +36,7 @@ public class CertificateController {
         String issuerSerialNumber = "";
 
         if(request.getCertificateType() != CertificateType.ROOT) {
-            parentCertificate = this.certificateService.findBySerialNumber(new BigInteger(request.getIssuerSerialNumber()));
+            parentCertificate = this.certificateService.findBySerialNumber(request.getIssuerSerialNumber());
             issuerSerialNumber = parentCertificate.getSerialNumber().toString();
         }
 
@@ -50,6 +51,19 @@ public class CertificateController {
         );
 
         return new ResponseEntity<>(new CertificateDTO(c), HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "getCertificatesByIssuerId/{id}",
+            method = RequestMethod.GET,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> getCertificatesByIssuerId(@PathVariable Long id) {
+
+        List<CertificateRequest> certificateRequests = this.certificateService.listCertificateRequestsByIssuerId(id);
+        if(certificateRequests == null){
+            return new ResponseEntity<>(certificateRequests, HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(certificateRequests, HttpStatus.OK);
+
     }
 
 
@@ -69,12 +83,12 @@ public class CertificateController {
 
     @PostMapping("revoke")
     public ResponseEntity<Certificate> revoke(@RequestBody CertificateDTO certificate) {
-        return new ResponseEntity<>(certificateService.revokeCertificate(new BigInteger(certificate.getSerialNumber()), certificate.getRevokeReason()), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.revokeCertificate(certificate.getSerialNumber(), certificate.getRevokeReason()), HttpStatus.OK);
     }
 
     @GetMapping("getOne/{serialNumber}")
     public ResponseEntity<Certificate> getOne(@PathVariable String serialNumber) {
-        return new ResponseEntity<>(certificateService.findBySerialNumber(new BigInteger(serialNumber)), HttpStatus.OK);
+        return new ResponseEntity<>(certificateService.findBySerialNumber(serialNumber), HttpStatus.OK);
     }
 
 }

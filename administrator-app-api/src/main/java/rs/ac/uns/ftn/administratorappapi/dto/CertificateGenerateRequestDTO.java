@@ -1,6 +1,7 @@
 package rs.ac.uns.ftn.administratorappapi.dto;
 
 import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
+import rs.ac.uns.ftn.administratorappapi.model.User;
 
 import java.util.Date;
 
@@ -12,6 +13,9 @@ public class CertificateGenerateRequestDTO {
     private String country;
     private String city;
     private CertificateType certificateType;
+
+    private Long userId;
+
     private String secretWord1;
     private String secretWord2;
     private String secretWord3;
@@ -72,6 +76,7 @@ public class CertificateGenerateRequestDTO {
                                          String country,
                                          String city,
                                          CertificateType certificateType,
+                                         Long userId,
                                          String secretWord1,
                                          String secretWord2,
                                          String secretWord3,
@@ -86,6 +91,7 @@ public class CertificateGenerateRequestDTO {
         this.country = country;
         this.city = city;
         this.certificateType = certificateType;
+        this.userId = userId;
         this.secretWord1 = secretWord1;
         this.secretWord2 = secretWord2;
         this.secretWord3 = secretWord3;
@@ -217,5 +223,13 @@ public class CertificateGenerateRequestDTO {
 
     public void setSecretWord3confirmed(String secretWord3confirmed) {
         this.secretWord3confirmed = secretWord3confirmed;
+    }
+
+    public Long getUserId() {
+        return userId;
+    }
+
+    public void setUserId(Long userId) {
+        this.userId = userId;
     }
 }

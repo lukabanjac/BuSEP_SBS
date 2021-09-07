@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -32,9 +34,14 @@ public class CertificateRequest {
     @Column(name = "rejectedReason")
     private String rejectedReason;
 
+    @OneToOne
+    @JsonManagedReference
+    private User user;
+
     public CertificateRequest(){
         super();
     }
+
 
     public CertificateRequest(Long id, String issuerSerialNumber, String country, String city, String organisation, String organisationUnit, CertificateRequestStatus status, String rejectedReason) {
         this.id = id;
@@ -122,6 +129,13 @@ public class CertificateRequest {
         this.rejectedReason = recetedReason;
     }
 
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
+    }
 
 }
 

@@ -61,6 +61,13 @@ public class User implements UserDetails {
 
 
 
+    @OneToOne
+    @JsonBackReference
+    private CertificateRequest certificateRequest;
+
+
+
+
     public User() {
     }
 
@@ -177,6 +184,22 @@ public class User implements UserDetails {
     @Override
     public boolean isCredentialsNonExpired() {
         return true;
+    }
+
+    public Certificate getCertificate() {
+        return certificate;
+    }
+
+    public void setCertificate(Certificate certificate) {
+        this.certificate = certificate;
+    }
+
+    public CertificateRequest getCertificateRequest() {
+        return certificateRequest;
+    }
+
+    public void setCertificateRequest(CertificateRequest certificateRequest) {
+        this.certificateRequest = certificateRequest;
     }
 
     @Override

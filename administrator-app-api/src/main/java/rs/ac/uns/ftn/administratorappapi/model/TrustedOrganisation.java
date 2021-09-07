@@ -1,5 +1,7 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 
 @Entity
@@ -30,6 +32,10 @@ public class TrustedOrganisation {
 
     @Column(name = "secret_word_3")
     private String secretWord3;
+
+    @OneToOne
+    @JsonManagedReference
+    private Admin admin;
 
     public TrustedOrganisation() {
         super();
@@ -107,6 +113,14 @@ public class TrustedOrganisation {
 
     public void setSecretWord3(String secretWord3) {
         this.secretWord3 = secretWord3;
+    }
+
+    public Admin getAdmin() {
+        return admin;
+    }
+
+    public void setAdmin(Admin admin) {
+        this.admin = admin;
     }
 }
 
