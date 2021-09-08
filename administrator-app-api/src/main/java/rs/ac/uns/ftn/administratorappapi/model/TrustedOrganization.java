@@ -6,7 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Table(name = "trusted_organisation")
-public class TrustedOrganisation {
+public class TrustedOrganization {
     @Id
     @Column(name = "id", nullable = false, unique = true)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -37,11 +37,11 @@ public class TrustedOrganisation {
     @JsonManagedReference
     private Admin admin;
 
-    public TrustedOrganisation() {
+    public TrustedOrganization() {
         super();
     }
 
-    public TrustedOrganisation(String country, String city, String organisation, String organisationUnit, String secretWord1, String secretWord2, String secretWord3) {
+    public TrustedOrganization(String country, String city, String organisation, String organisationUnit, String secretWord1, String secretWord2, String secretWord3) {
         this.country = country;
         this.city = city;
         this.organisation = organisation;

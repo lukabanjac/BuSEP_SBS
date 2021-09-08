@@ -100,4 +100,15 @@ public class CertificateController {
         return new ResponseEntity<>(certificateService.findBySerialNumber(serialNumber), HttpStatus.OK);
     }
 
+    @GetMapping("getActive")
+    public ResponseEntity<List<Certificate>> getActive(){
+        return new ResponseEntity<>(certificateService.getRevoked(false), HttpStatus.OK);
+    }
+
+    @GetMapping("getRevoked")
+    public ResponseEntity<List<Certificate>> getRevoked(){
+        return new ResponseEntity<>(certificateService.getRevoked(true), HttpStatus.OK);
+    }
+
+
 }

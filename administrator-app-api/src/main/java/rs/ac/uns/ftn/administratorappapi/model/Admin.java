@@ -19,7 +19,7 @@ public class Admin extends User {
 
     @OneToOne
     @JsonBackReference
-    private TrustedOrganisation trustedOrganisation;
+    private TrustedOrganization trustedOrganization;
 
 
 
@@ -36,11 +36,11 @@ public class Admin extends User {
         this.certificate = certificate;
     }
 
-    public TrustedOrganisation getTrustedOrganisation() {
-        return trustedOrganisation;
+    public TrustedOrganization getTrustedOrganisation() {
+        return trustedOrganization;
     }
 
-    public void setTrustedOrganisation(TrustedOrganisation trustedOrganisation) {
-        this.trustedOrganisation = trustedOrganisation;
+    public void setTrustedOrganisation(TrustedOrganization trustedOrganization) {
+        this.trustedOrganization = trustedOrganization;
     }
 }

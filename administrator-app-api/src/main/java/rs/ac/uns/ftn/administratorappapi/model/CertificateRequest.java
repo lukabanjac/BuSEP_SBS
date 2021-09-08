@@ -22,11 +22,11 @@ public class CertificateRequest {
     @Column(name = "city")
     private String city;
 
-    @Column(name = "organisation")
-    private String organisation;
+    @Column(name = "organization")
+    private String organization;
 
-    @Column(name = "organisation_unit")
-    private String organisationUnit;
+    @Column(name = "organization_unit")
+    private String organizationUnit;
 
     @Column(name = "status")
     private CertificateRequestStatus status;
@@ -43,24 +43,24 @@ public class CertificateRequest {
     }
 
 
-    public CertificateRequest(Long id, String issuerSerialNumber, String country, String city, String organisation, String organisationUnit, CertificateRequestStatus status, String rejectedReason) {
+    public CertificateRequest(Long id, String issuerSerialNumber, String country, String city, String organization, String organizationUnit, CertificateRequestStatus status, String rejectedReason) {
         this.id = id;
         this.issuerSerialNumber = issuerSerialNumber;
         this.country = country;
         this.city = city;
-        this.organisation = organisation;
-        this.organisationUnit = organisationUnit;
+        this.organization = organization;
+        this.organizationUnit = organizationUnit;
         this.status = status;
         this.rejectedReason = rejectedReason;
     }
 
-    public CertificateRequest(Long id, String issuerSerialNumber, String country, String city, String organisation, String organisationUnit) {
+    public CertificateRequest(Long id, String issuerSerialNumber, String country, String city, String organization, String organizationUnit) {
         this.id = id;
         this.issuerSerialNumber = issuerSerialNumber;
         this.country = country;
         this.city = city;
-        this.organisation = organisation;
-        this.organisationUnit = organisationUnit;
+        this.organization = organization;
+        this.organizationUnit = organizationUnit;
         this.status = CertificateRequestStatus.PENDING;
     }
 
@@ -97,20 +97,20 @@ public class CertificateRequest {
         this.city = city;
     }
 
-    public String getOrganisation() {
-        return organisation;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
+    public void setOrganization(String organisation) {
+        this.organization = organisation;
     }
 
-    public String getOrganisationUnit() {
-        return organisationUnit;
+    public String getOrganizationUnit() {
+        return organizationUnit;
     }
 
-    public void setOrganisationUnit(String organisationUnit) {
-        this.organisationUnit = organisationUnit;
+    public void setOrganizationUnit(String organisationUnit) {
+        this.organizationUnit = organisationUnit;
     }
 
     public CertificateRequestStatus getStatus() {

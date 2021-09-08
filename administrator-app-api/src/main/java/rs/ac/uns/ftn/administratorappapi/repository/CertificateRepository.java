@@ -15,4 +15,7 @@ public interface CertificateRepository extends JpaRepository<Certificate, Long> 
 
     List<Certificate> findAllByCaSerialNumberEquals(String parentId);
 
+    List<Certificate> findByRevoked(Boolean revoked);
+
+
 }

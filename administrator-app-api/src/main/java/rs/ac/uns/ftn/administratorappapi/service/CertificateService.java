@@ -26,4 +26,7 @@ public interface CertificateService {
     Certificate findBySerialNumber(String serialNumber);
     Certificate createCertificate(CertificateGenerateRequestDTO request, String issuerSerialNumber, CertificateType type);
     MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO);
+
+    List<Certificate> getRevoked(Boolean active);
+
 }

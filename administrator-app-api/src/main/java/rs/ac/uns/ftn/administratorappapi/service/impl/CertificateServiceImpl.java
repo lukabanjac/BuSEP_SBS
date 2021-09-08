@@ -7,7 +7,6 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
-import org.bouncycastle.cert.cmp.CertificateStatus;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -174,7 +173,7 @@ public class CertificateServiceImpl implements CertificateService {
 
 
 
-        TrustedOrganisation to = trustedOrganisationRepository
+        TrustedOrganization to = trustedOrganisationRepository
                 .findByCountryAndCityAndOrganisationAndOrganisationUnit
                         (
                                 requestDTO.getCountry(),
@@ -215,8 +214,8 @@ public class CertificateServiceImpl implements CertificateService {
         cr.setIssuerSerialNumber(requestDTO.getIssuerSerialNumber());
         cr.setCountry(requestDTO.getCountry());
         cr.setCity(requestDTO.getCity());
-        cr.setOrganisation(requestDTO.getOrganization());
-        cr.setOrganisationUnit(requestDTO.getOrganizationUnit());
+        cr.setOrganization(requestDTO.getOrganization());
+        cr.setOrganizationUnit(requestDTO.getOrganizationUnit());
         cr.setStatus(CertificateRequestStatus.PENDING);
         cr.setUser(user.get());
 
@@ -224,6 +223,12 @@ public class CertificateServiceImpl implements CertificateService {
 
         return new MessageDTO(true, "Request was successfully sent :)");
     }
+
+    @Override
+    public List<Certificate> getRevoked(Boolean active) {
+        return certificateRepository.findByRevoked(active);
+    }
+
 
     private KeyPair generateKeyPair(boolean isCA) {
         try {
@@ -256,6 +261,10 @@ public class CertificateServiceImpl implements CertificateService {
     public List<Certificate> getAll() {
         return certificateRepository.findAll();
     }
+
+
+
+
 
     @Override
     public Certificate revokeCertificate(String serialNumber, String revokeReason) {
