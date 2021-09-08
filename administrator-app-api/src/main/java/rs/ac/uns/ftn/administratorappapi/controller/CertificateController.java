@@ -56,9 +56,10 @@ public class CertificateController {
     @RequestMapping(value = "getCertificatesByIssuerId/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> getCertificatesByIssuerId(@PathVariable Long id) {
-
+    public ResponseEntity<?> getCertificatesByIssuerId(@PathVariable("id") String id) {
+        System.out.println(id);
         List<CertificateRequest> certificateRequests = this.certificateService.listCertificateRequestsByIssuerId(id);
+        System.out.println(certificateRequests.size());
         if(certificateRequests == null){
             return new ResponseEntity<>(certificateRequests, HttpStatus.NO_CONTENT);
         }

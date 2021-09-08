@@ -287,7 +287,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateRequest> listCertificateRequestsByIssuerId(Long id){
+    public List<CertificateRequest> listCertificateRequestsByIssuerId(String id){
         List<CertificateRequest> list = this.certificateRequestRepository.findByIssuerSerialNumber(id);
         return list;
     }
