@@ -15,6 +15,7 @@ public class CertificateGenerateRequestDTO {
     private CertificateType certificateType;
 
     private Long userId;
+    private Long certificateRequestId;
 
     private String secretWord1;
     private String secretWord2;
@@ -108,6 +109,15 @@ public class CertificateGenerateRequestDTO {
         this.organization = organization;
         this.country = country;
         this.city = city;
+    }
+    public CertificateGenerateRequestDTO(String issuerSerialNumber, String commonName, String organizationUnit, String organization, String country, String city, Long certificateRequestId) {
+        this.issuerSerialNumber = issuerSerialNumber;
+        this.commonName = commonName;
+        this.organizationUnit = organizationUnit;
+        this.organization = organization;
+        this.country = country;
+        this.city = city;
+        this.certificateRequestId = certificateRequestId;
     }
 
     public SubjectDTO getSubjectDTO() {
@@ -231,5 +241,13 @@ public class CertificateGenerateRequestDTO {
 
     public void setUserId(Long userId) {
         this.userId = userId;
+    }
+
+    public Long getCertificateRequestId() {
+        return certificateRequestId;
+    }
+
+    public void setCertificateRequestId(Long certificateRequestId) {
+        this.certificateRequestId = certificateRequestId;
     }
 }

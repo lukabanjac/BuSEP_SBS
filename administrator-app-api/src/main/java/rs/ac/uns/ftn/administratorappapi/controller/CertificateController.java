@@ -67,6 +67,14 @@ public class CertificateController {
 
     }
 
+    @RequestMapping(value = "rejectRequest/{id}",
+            method = RequestMethod.PUT,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> rejectRequest(@PathVariable("id") String id) {
+        CertificateRequest cr = certificateService.rejectRequest(Long.parseLong(id));
+        return new ResponseEntity<>(cr, HttpStatus.OK);
+    }
+
 
     @RequestMapping(value = "generateRequest",
             method = RequestMethod.POST,

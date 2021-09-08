@@ -21,6 +21,7 @@ public interface CertificateService {
     //HttpStatus issueTo(String username);
     List<CertificateRequest> listCertificateRequestsByIssuerId(String id);
     List<Certificate> getAll();
+    CertificateRequest rejectRequest(Long id);
     Certificate revokeCertificate(String serialNumber, String revokeReason);
     Certificate findBySerialNumber(String serialNumber);
     Certificate createCertificate(CertificateGenerateRequestDTO request, String issuerSerialNumber, CertificateType type);

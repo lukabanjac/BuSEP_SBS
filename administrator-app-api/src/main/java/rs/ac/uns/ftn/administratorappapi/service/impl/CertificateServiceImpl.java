@@ -7,6 +7,7 @@ import org.bouncycastle.asn1.x500.style.BCStyle;
 import org.bouncycastle.asn1.x509.*;
 import org.bouncycastle.cert.CertIOException;
 import org.bouncycastle.cert.X509v3CertificateBuilder;
+import org.bouncycastle.cert.cmp.CertificateStatus;
 import org.bouncycastle.cert.jcajce.JcaX509CertificateConverter;
 import org.bouncycastle.cert.jcajce.JcaX509ExtensionUtils;
 import org.bouncycastle.cert.jcajce.JcaX509v3CertificateBuilder;
@@ -190,6 +191,14 @@ public class CertificateServiceImpl implements CertificateService {
         System.out.println(to.getSecretWord1());
         System.out.println("\n\n");
 
+        System.out.println(requestDTO.getSecretWord1());
+        System.out.println(requestDTO.getSecretWord2());
+        System.out.println(requestDTO.getSecretWord3());
+
+        System.out.println(encoder.matches(requestDTO.getSecretWord1(), to.getSecretWord1()));
+        System.out.println(encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()));
+        System.out.println(encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3()));
+
         if(!encoder.matches(requestDTO.getSecretWord1(), to.getSecretWord1()) ||
         !encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()) ||
         !encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3())){
@@ -287,6 +296,14 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
+    public CertificateRequest rejectRequest(Long id) {
+        CertificateRequest cr = certificateRequestRepository.findById(id).get();
+        cr.setStatus(CertificateRequestStatus.REJECTED);
+        certificateRequestRepository.save(cr);
+        return cr;
+    }
+
+    @Override
     public List<CertificateRequest> listCertificateRequestsByIssuerId(String id){
         List<CertificateRequest> list = this.certificateRequestRepository.findByIssuerSerialNumber(id);
         return list;
@@ -356,6 +373,14 @@ public class CertificateServiceImpl implements CertificateService {
         c.setUser(user.get());
         System.out.println(c.toString());
         certificateRepository.save(c);
+
+        if(c.getType() != CertificateType.ROOT){
+            CertificateRequest cr = certificateRequestRepository.findById(request.getCertificateRequestId()).get();
+            cr.setStatus(CertificateRequestStatus.ACCEPTED);
+            certificateRequestRepository.save(cr);
+        }
+
+
         return c;
     }
 
