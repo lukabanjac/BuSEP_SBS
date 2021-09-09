@@ -17,7 +17,7 @@ public class Certificate {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="serial_number", nullable = false, unique = true)
+    @Column(name="serial_number", nullable = false)
     private String serialNumber;
 
 
