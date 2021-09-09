@@ -16,6 +16,7 @@ import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import rs.ac.uns.ftn.administratorappapi.model.Admin;
 import rs.ac.uns.ftn.administratorappapi.model.User;
 import rs.ac.uns.ftn.administratorappapi.security.TimeProvider;
 
@@ -49,6 +50,11 @@ public class TokenHelper {
 				})
 				.collect(Collectors.toList());
 
+		String currentSerialNumber = "";
+		System.out.println(user.getCertificate());
+		if(user instanceof Admin){
+			currentSerialNumber = user.getCertificate().getSerialNumber();
+		}
 
 		return Jwts.builder()
 				.setIssuer(APP_NAME)
@@ -56,6 +62,7 @@ public class TokenHelper {
 				.setIssuedAt(timeProvider.now())
 				.setExpiration(generateExpirationDate())
 				.claim("roles",roles)
+				.claim("currentSerialNumber", currentSerialNumber)
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
 

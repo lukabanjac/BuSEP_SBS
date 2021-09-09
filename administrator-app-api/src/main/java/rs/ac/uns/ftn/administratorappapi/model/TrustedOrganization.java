@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "trusted_organisation")
+@Table(name = "trusted_organization")
 public class TrustedOrganization {
     @Id
     @Column(name = "id", nullable = false, unique = true)
@@ -18,11 +18,11 @@ public class TrustedOrganization {
     @Column(name = "city")
     private String city;
 
-    @Column(name = "organisation")
-    private String organisation;
+    @Column(name = "organization")
+    private String organization;
 
-    @Column(name = "organisation_unit")
-    private String organisationUnit;
+    @Column(name = "organization_unit")
+    private String organizationUnit;
 
     @Column(name = "secret_word_1")
     private String secretWord1;
@@ -41,11 +41,11 @@ public class TrustedOrganization {
         super();
     }
 
-    public TrustedOrganization(String country, String city, String organisation, String organisationUnit, String secretWord1, String secretWord2, String secretWord3) {
+    public TrustedOrganization(String country, String city, String organisation, String organizationUnit, String secretWord1, String secretWord2, String secretWord3) {
         this.country = country;
         this.city = city;
-        this.organisation = organisation;
-        this.organisationUnit = organisationUnit;
+        this.organization = organisation;
+        this.organizationUnit = organizationUnit;
         this.secretWord1 = secretWord1;
         this.secretWord2 = secretWord2;
         this.secretWord3 = secretWord3;
@@ -75,20 +75,20 @@ public class TrustedOrganization {
         this.city = city;
     }
 
-    public String getOrganisation() {
-        return organisation;
+    public String getOrganization() {
+        return organization;
     }
 
-    public void setOrganisation(String organisation) {
-        this.organisation = organisation;
+    public void setOrganization(String organization) {
+        this.organization = organization;
     }
 
-    public String getOrganisationUnit() {
-        return organisationUnit;
+    public String getOrganizationUnit() {
+        return organizationUnit;
     }
 
-    public void setOrganisationUnit(String organisationUnit) {
-        this.organisationUnit = organisationUnit;
+    public void setOrganizationUnit(String organizationUnit) {
+        this.organizationUnit = organizationUnit;
     }
 
     public String getSecretWord1() {

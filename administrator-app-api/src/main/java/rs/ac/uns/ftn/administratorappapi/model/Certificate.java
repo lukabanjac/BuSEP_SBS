@@ -1,5 +1,6 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
@@ -62,11 +63,12 @@ public class Certificate {
     @Temporal(TemporalType.TIMESTAMP)
     private java.util.Date expiringAt;
 
-
-
-    @OneToOne
-    @JsonManagedReference
+    @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "user_id")
     private User user;
+
+//    @OneToOne(mappedBy = "certificate")
+//    private User user;
 
     public Certificate() {
     }

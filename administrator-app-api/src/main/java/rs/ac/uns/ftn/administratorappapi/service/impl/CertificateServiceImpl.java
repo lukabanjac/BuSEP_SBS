@@ -27,7 +27,7 @@ import rs.ac.uns.ftn.administratorappapi.model.*;
 import rs.ac.uns.ftn.administratorappapi.model.Certificate;
 import rs.ac.uns.ftn.administratorappapi.repository.CertificateRepository;
 import rs.ac.uns.ftn.administratorappapi.repository.CertificateRequestRepository;
-import rs.ac.uns.ftn.administratorappapi.repository.TrustedOrganisationRepository;
+import rs.ac.uns.ftn.administratorappapi.repository.TrustedOrganizationRepository;
 import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
 import rs.ac.uns.ftn.administratorappapi.storage.CertificateStorage;
@@ -55,7 +55,7 @@ public class CertificateServiceImpl implements CertificateService {
     private CertificateRequestRepository  certificateRequestRepository;
 
     @Autowired
-    private TrustedOrganisationRepository trustedOrganisationRepository;
+    private TrustedOrganizationRepository trustedOrganizationRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -173,8 +173,8 @@ public class CertificateServiceImpl implements CertificateService {
 
 
 
-        TrustedOrganization to = trustedOrganisationRepository
-                .findByCountryAndCityAndOrganisationAndOrganisationUnit
+        TrustedOrganization to = trustedOrganizationRepository
+                .findByCountryAndCityAndOrganizationAndOrganizationUnit
                         (
                                 requestDTO.getCountry(),
                                 requestDTO.getCity(),
@@ -380,7 +380,7 @@ public class CertificateServiceImpl implements CertificateService {
         );
         Optional<User> user = this.userRepository.findById(request.getUserId());
         c.setUser(user.get());
-        System.out.println(c.toString());
+        System.out.println(c.getUser());
         certificateRepository.save(c);
 
         if(c.getType() != CertificateType.ROOT){

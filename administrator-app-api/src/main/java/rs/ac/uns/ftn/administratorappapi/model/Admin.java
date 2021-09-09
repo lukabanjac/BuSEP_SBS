@@ -13,14 +13,10 @@ import java.sql.Timestamp;
 @DiscriminatorValue("ADMIN")
 public class Admin extends User {
 
-    @OneToOne
-    @JoinColumn(name = "certificate_id", referencedColumnName = "id")
-    private Certificate certificate;
 
     @OneToOne
     @JsonBackReference
     private TrustedOrganization trustedOrganization;
-
 
 
     public Admin(){
@@ -31,16 +27,16 @@ public class Admin extends User {
         super(username, firstName, lastName, email, password, lastPasswordResetDate);
     }
 
-    public Admin(String username, String firstName, String lastName, String email, String password, Timestamp lastPasswordResetDate, Certificate certificate) {
+    /*public Admin(String username, String firstName, String lastName, String email, String password, Timestamp lastPasswordResetDate, Certificate certificate) {
         super(username, firstName, lastName, email, password, lastPasswordResetDate);
         this.certificate = certificate;
-    }
+    }*/
 
-    public TrustedOrganization getTrustedOrganisation() {
+    public TrustedOrganization getTrustedOrganization() {
         return trustedOrganization;
     }
 
-    public void setTrustedOrganisation(TrustedOrganization trustedOrganization) {
+    public void setTrustedOrganization(TrustedOrganization trustedOrganization) {
         this.trustedOrganization = trustedOrganization;
     }
 }
