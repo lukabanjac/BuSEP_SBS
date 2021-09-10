@@ -67,11 +67,13 @@ public class CertificateController {
 
     }
 
-    @RequestMapping(value = "rejectRequest/{id}",
+    @RequestMapping(value = "rejectRequest/{id}/{reason}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<?> rejectRequest(@PathVariable("id") String id) {
-        CertificateRequest cr = certificateService.rejectRequest(Long.parseLong(id));
+    public ResponseEntity<?> rejectRequest(@PathVariable("id") String id,@PathVariable("reason") String reason) {
+        System.out.println(id);
+        System.out.println(reason);
+        CertificateRequest cr = certificateService.rejectRequest(Long.parseLong(id),reason);
         return new ResponseEntity<>(cr, HttpStatus.OK);
     }
 
@@ -88,6 +90,11 @@ public class CertificateController {
     @GetMapping("getAll")
     public ResponseEntity<List<Certificate>> getAll() {
         return new ResponseEntity<>(certificateService.getAll(), HttpStatus.OK);
+    }
+
+    @GetMapping("getAllByCaSerialNo/{id}")
+    public ResponseEntity<List<CertificateDTO>> getAllByCaSerialNo(@PathVariable("id") String id){
+        return new ResponseEntity<List<CertificateDTO>>(certificateService.getAllByIssuerNo(id), HttpStatus.OK);
     }
 
     @PostMapping("revoke")

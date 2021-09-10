@@ -34,6 +34,11 @@ public class CertificateDTO {
         this.expiringAt = c.getExpiringAt().toString();
     }
 
+    public CertificateDTO(String serialNumber, String revokeReason) {
+        this.serialNumber = serialNumber;
+        this.revokeReason = revokeReason;
+    }
+
     public long getId() {
         return id;
     }

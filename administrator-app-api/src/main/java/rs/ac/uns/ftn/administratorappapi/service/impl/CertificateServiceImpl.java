@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import rs.ac.uns.ftn.administratorappapi.dto.CertificateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.SubjectDTO;
@@ -41,6 +42,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class CertificateServiceImpl implements CertificateService {
@@ -229,6 +231,11 @@ public class CertificateServiceImpl implements CertificateService {
         return certificateRepository.findByRevoked(active);
     }
 
+    @Override
+    public List<CertificateDTO> getAllByIssuerNo(String id) {
+        return this.certificateRepository.findAllByCaSerialNumberEquals(id).stream().map(c -> new CertificateDTO(c)).collect(Collectors.toList());
+    }
+
 
     private KeyPair generateKeyPair(boolean isCA) {
         try {
@@ -261,6 +268,7 @@ public class CertificateServiceImpl implements CertificateService {
     public List<Certificate> getAll() {
         return certificateRepository.findAll();
     }
+
 
 
 
@@ -305,8 +313,9 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public CertificateRequest rejectRequest(Long id) {
+    public CertificateRequest rejectRequest(Long id, String reason) {
         CertificateRequest cr = certificateRequestRepository.findById(id).get();
+        cr.setRejectedReason(reason);
         cr.setStatus(CertificateRequestStatus.REJECTED);
         certificateRequestRepository.save(cr);
         return cr;
