@@ -17,6 +17,9 @@ public class CertificateGenerateRequestDTO {
     private Long userId;
     private Long certificateRequestId;
 
+    private String dateFrom;
+    private String dateTo;
+
     private String secretWord1;
     private String secretWord2;
     private String secretWord3;

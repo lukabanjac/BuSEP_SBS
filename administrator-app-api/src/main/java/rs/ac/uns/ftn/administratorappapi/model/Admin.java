@@ -2,6 +2,7 @@ package rs.ac.uns.ftn.administratorappapi.model;
 
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 import javax.persistence.DiscriminatorValue;
 import javax.persistence.Entity;
@@ -14,8 +15,8 @@ import java.sql.Timestamp;
 public class Admin extends User {
 
 
-    @OneToOne
-    @JsonBackReference
+    @OneToOne(mappedBy = "admin")
+    @JsonIgnore
     private TrustedOrganization trustedOrganization;
 
 

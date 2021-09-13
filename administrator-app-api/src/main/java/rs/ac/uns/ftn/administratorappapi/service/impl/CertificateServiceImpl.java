@@ -38,6 +38,8 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -215,12 +217,33 @@ public class CertificateServiceImpl implements CertificateService {
             return new MessageDTO(false, "User id not found");
         }
 
+
+        String organisation = "";
+        String organisationUnit = "";
+        if(user.get() instanceof  Admin){
+            Admin admin = (Admin) user.get();
+            organisation = admin.getTrustedOrganization().getOrganization();
+            organisationUnit = admin.getTrustedOrganization().getOrganizationUnit();
+        }else  if(user.get() instanceof Doctor){
+            Doctor doctor = (Doctor) user.get();
+            organisation = doctor.getTrusted_organization().getOrganization();
+            organisationUnit = doctor.getTrusted_organization().getOrganizationUnit();
+        }
+
+
+
+
         CertificateRequest cr = new CertificateRequest();
         cr.setIssuerSerialNumber(requestDTO.getIssuerSerialNumber());
         cr.setCountry(requestDTO.getCountry());
         cr.setCity(requestDTO.getCity());
-        cr.setOrganization(requestDTO.getOrganization());
-        cr.setOrganizationUnit(requestDTO.getOrganizationUnit());
+
+        cr.setOrganization(organisation);
+        cr.setOrganizationUnit(organisationUnit);
+
+//        cr.setOrganization(requestDTO.getOrganization());
+//        cr.setOrganizationUnit(requestDTO.getOrganizationUnit());
+
         cr.setStatus(CertificateRequestStatus.PENDING);
         cr.setUser(user.get());
 
@@ -257,9 +280,12 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
 
-    private SubjectData generateSubjectData(PublicKey publicKey, X500Name subjectDN, boolean isCA) {
+    private SubjectData generateSubjectData(PublicKey publicKey, X500Name subjectDN, boolean isCA, String dateFrom, String dateTo) {
         long now = System.currentTimeMillis();
         Date startDate = new Date(now);
+//        LocalDateTime startDate = LocalDateTime.parse(dateFrom);
+//        Date date = new Date(dateFrom);
+
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
         //TODO: hard kodovano na jednu godinu, ovdije proslijediti unos
@@ -346,13 +372,13 @@ public class CertificateServiceImpl implements CertificateService {
 
         if (type == CertificateType.ROOT) {
             keyPair = generateKeyPair(true);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true);
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true,request.getDateFrom(),request.getDateTo());
             issuer = new IssuerData(keyPair.getPrivate(), subjectDN, subject.getPublicKey(), subject.getSerialNumber());
             certificate = generateCertificate(subject, issuer, true);
         }
         else if (type == CertificateType.INTERMEDIATE) {
             keyPair = generateKeyPair(true);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true);
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true,request.getDateFrom(),request.getDateTo());
             System.out.println(subject.getSerialNumber());
             issuer = this.certificateStorage.getIssuerDataBySerialNumber(issuerSerialNumber);
             System.out.println(issuer.getSerialNumber());
@@ -361,7 +387,7 @@ public class CertificateServiceImpl implements CertificateService {
         else {
             keyPair = generateKeyPair(false);
             issuer = this.certificateStorage.getIssuerDataBySerialNumber(issuerSerialNumber);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, false);
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, false, request.getDateFrom(),request.getDateTo());
             certificate = generateCertificate(subject, issuer, false);
         }
 
@@ -373,7 +399,6 @@ public class CertificateServiceImpl implements CertificateService {
                         .storeCertificateDistributionFiles(
                             certificate.getSerialNumber().toString(),
                             type);
-
 
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -388,8 +413,8 @@ public class CertificateServiceImpl implements CertificateService {
                 false,
                 null,
                 null,
-                subject.getStartDate(),
-                subject.getEndDate()
+                LocalDateTime.parse(subject.getStartDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
+                LocalDateTime.parse(subject.getEndDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
         );
         Optional<User> user = this.userRepository.findById(request.getUserId());
         c.setUser(user.get());

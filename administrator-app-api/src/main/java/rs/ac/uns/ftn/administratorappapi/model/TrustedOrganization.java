@@ -1,8 +1,12 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "trusted_organization")
@@ -33,9 +37,20 @@ public class TrustedOrganization {
     @Column(name = "secret_word_3")
     private String secretWord3;
 
-    @OneToOne
-    @JsonManagedReference
+    @OneToOne(targetEntity = Admin.class, fetch = FetchType.EAGER)
+    @JoinColumn(name = "admin_id")
     private Admin admin;
+
+//    @OneToMany(mappedBy="trustedOrganization")
+//    private List<Device> devices;
+
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "trusted_organization")
+    @JsonBackReference
+    private Set<Device> devices = new HashSet<Device>();
+
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "trusted_organization")
+    @JsonBackReference
+    private Set<Doctor> doctors = new HashSet<Doctor>();
 
     public TrustedOrganization() {
         super();
@@ -121,6 +136,22 @@ public class TrustedOrganization {
 
     public void setAdmin(Admin admin) {
         this.admin = admin;
+    }
+
+    public Set<Device> getDevices() {
+        return devices;
+    }
+
+    public void setDevices(Set<Device> devices) {
+        this.devices = devices;
+    }
+
+    public Set<Doctor> getDoctors() {
+        return doctors;
+    }
+
+    public void setDoctors(Set<Doctor> doctors) {
+        this.doctors = doctors;
     }
 }
 

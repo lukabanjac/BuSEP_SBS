@@ -7,14 +7,16 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
+import rs.ac.uns.ftn.administratorappapi.dto.DeviceDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
-import rs.ac.uns.ftn.administratorappapi.model.Certificate;
-import rs.ac.uns.ftn.administratorappapi.model.CertificateRequest;
-import rs.ac.uns.ftn.administratorappapi.model.CertificateType;
+import rs.ac.uns.ftn.administratorappapi.model.*;
+import rs.ac.uns.ftn.administratorappapi.repository.TrustedOrganizationRepository;
 import rs.ac.uns.ftn.administratorappapi.service.CertificateService;
+import rs.ac.uns.ftn.administratorappapi.service.DeviceService;
 import rs.ac.uns.ftn.administratorappapi.util.DataGenerator;
 
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 
 @RestController
@@ -26,6 +28,9 @@ public class CertificateController {
 
     @Autowired
     DataGenerator dataGenerator;
+
+    @Autowired
+    DeviceService deviceService;
 
     @RequestMapping(value = "generate",
             method = RequestMethod.POST,
@@ -53,6 +58,22 @@ public class CertificateController {
         return new ResponseEntity<>(new CertificateDTO(c), HttpStatus.OK);
     }
 
+    @RequestMapping(value = "generateForLeaf",
+            method = RequestMethod.POST,
+            consumes = MediaType.APPLICATION_JSON_VALUE,
+            produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<?> generateForLeaf(@RequestBody HashMap<String,Object> body) throws Exception {
+        DeviceDTO deviceDTO = (DeviceDTO) body.get("deviceDTO");
+        Device device = deviceService.addDevice(deviceDTO);
+        ResponseEntity<CertificateDTO> re = this.generate((CertificateGenerateRequestDTO) body.get("certificateRequestDTO"));
+        HashMap<String, Object> responseJson = new HashMap<>();
+        responseJson.put("device", device);
+        responseJson.put("certificateDTO", re.getBody());
+        return new ResponseEntity<>(responseJson, HttpStatus.OK);
+    }
+
+
+
     @RequestMapping(value = "getCertificatesByIssuerId/{id}",
             method = RequestMethod.GET,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,7 +85,6 @@ public class CertificateController {
             return new ResponseEntity<>(certificateRequests, HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(certificateRequests, HttpStatus.OK);
-
     }
 
     @RequestMapping(value = "rejectRequest/{id}/{reason}",
