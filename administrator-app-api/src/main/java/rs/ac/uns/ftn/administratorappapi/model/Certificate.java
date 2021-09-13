@@ -1,10 +1,12 @@
 package rs.ac.uns.ftn.administratorappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 import javax.persistence.*;
 import java.math.BigInteger;
+import java.time.LocalDateTime;
 import java.util.Date;
 
 @Entity
@@ -56,16 +58,30 @@ public class Certificate {
     private String revokeReason;
 
     @Column(name="issued_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date issuedAt;
+    private LocalDateTime issuedAt;
 
     @Column(name="expiring_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date expiringAt;
+    private LocalDateTime expiringAt;
+
+//    @Column(name="issued_at")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private java.util.Date issuedAt;
+//
+//    @Column(name="expiring_at")
+//    @Temporal(TemporalType.TIMESTAMP)
+//    private java.util.Date expiringAt;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToOne(mappedBy = "certificate")
+    @JsonIgnore
+    private Device device;
+
+//    @OneToOne(targetEntity = Device.class, fetch = FetchType.EAGER)
+//    @JoinColumn(name = "device_id")
+//    private Device device;
 
 //    @OneToOne(mappedBy = "certificate")
 //    private User user;
@@ -83,8 +99,8 @@ public class Certificate {
                        Boolean revoked,
                        Date revokedAt,
                        String revokeReason,
-                       Date issuedAt,
-                       Date expiringAt
+                       LocalDateTime issuedAt,
+                       LocalDateTime expiringAt
     )
     {
         this.serialNumber = serialNumber;
@@ -102,7 +118,7 @@ public class Certificate {
     }
 
 
-    public Certificate(Long id, String serialNumber, String caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
+    public Certificate(Long id, String serialNumber, String caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, LocalDateTime issuedAt, LocalDateTime expiringAt) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.caSerialNumber = caSerialNumber;
@@ -208,21 +224,38 @@ public class Certificate {
         this.revokeReason = revokeReason;
     }
 
-    public Date getIssuedAt() {
+    public LocalDateTime getIssuedAt() {
         return issuedAt;
     }
 
-    public void setIssuedAt(Date issuedAt) {
+    public void setIssuedAt(LocalDateTime issuedAt) {
         this.issuedAt = issuedAt;
     }
 
-    public Date getExpiringAt() {
+    public LocalDateTime getExpiringAt() {
         return expiringAt;
     }
 
-    public void setExpiringAt(Date expiringAt) {
+    public void setExpiringAt(LocalDateTime expiringAt) {
         this.expiringAt = expiringAt;
     }
+
+
+    //    public Date getIssuedAt() {
+//        return issuedAt;
+//    }
+//
+//    public void setIssuedAt(Date issuedAt) {
+//        this.issuedAt = issuedAt;
+//    }
+//
+//    public Date getExpiringAt() {
+//        return expiringAt;
+//    }
+//
+//    public void setExpiringAt(Date expiringAt) {
+//        this.expiringAt = expiringAt;
+//    }
 
     public Boolean getCa() {
         return ca;
@@ -238,5 +271,13 @@ public class Certificate {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public void setDevice(Device device) {
+        this.device = device;
     }
 }
