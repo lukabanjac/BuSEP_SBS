@@ -185,6 +185,9 @@ public class CertificateServiceImpl implements CertificateService {
                         );
 
 
+        System.out.println("Trusted org DTO ->" + requestDTO.toString());
+        System.out.println("Trusted org ->" + to);
+
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
         System.out.println("\n\n");
 
@@ -259,6 +262,7 @@ public class CertificateServiceImpl implements CertificateService {
         Date startDate = new Date(now);
         Calendar calendar = Calendar.getInstance();
         calendar.setTime(startDate);
+        //TODO: hard kodovano na jednu godinu, ovdije proslijediti unos
         calendar.add(Calendar.YEAR, 1);
         Date endDate = calendar.getTime();
         return new SubjectData(publicKey, subjectDN, new BigInteger(Long.toString(now)), startDate, endDate);
@@ -422,5 +426,4 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return nameBuilder.build();
     }
-
 }

@@ -63,6 +63,7 @@ public class TokenHelper {
 				.setExpiration(generateExpirationDate())
 				.claim("roles",roles)
 				.claim("currentSerialNumber", currentSerialNumber)
+				.claim("currentUserId", user.getId())
 				.signWith(SIGNATURE_ALGORITHM, SECRET).compact();
 	}
 

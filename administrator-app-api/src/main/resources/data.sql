@@ -3,6 +3,7 @@ INSERT INTO hospital.user_table (dtype, email, username, password, first_name, l
 
 INSERT INTO hospital.authority (name) values('ROLE_SUPERADMIN');
 INSERT INTO hospital.authority (name) values('ROLE_ADMIN');
+INSERT INTO hospital.authority (name) values('ROLE_DOCTOR');
 
 INSERT INTO hospital.permission (name) values('hasCertificate');
 

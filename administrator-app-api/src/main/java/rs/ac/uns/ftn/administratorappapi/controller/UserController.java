@@ -94,6 +94,8 @@ public class UserController {
 
         ArrayList<Authority> authorities = user.getAuthorities().stream().map(authority->(Authority) authority).collect(Collectors.toCollection(ArrayList::new));
 
+        System.out.println(authorities);
+
         // Vrati token kao odgovor na uspesno autentifikaciju
         return ResponseEntity.ok(new UserTokenState(jws, expiresIn, authorities.get(0).getAuthority()));
     }

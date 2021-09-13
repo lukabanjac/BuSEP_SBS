@@ -250,4 +250,26 @@ public class CertificateGenerateRequestDTO {
     public void setCertificateRequestId(Long certificateRequestId) {
         this.certificateRequestId = certificateRequestId;
     }
+
+    @Override
+    public String toString() {
+        return "CertificateGenerateRequestDTO{" +
+                "issuerSerialNumber='" + issuerSerialNumber + '\'' +
+                ", commonName='" + commonName + '\'' +
+                ", organizationUnit='" + organizationUnit + '\'' +
+                ", organization='" + organization + '\'' +
+                ", country='" + country + '\'' +
+                ", city='" + city + '\'' +
+                ", certificateType=" + certificateType +
+                ", userId=" + userId +
+                ", certificateRequestId=" + certificateRequestId +
+                ", secretWord1='" + secretWord1 + '\'' +
+                ", secretWord2='" + secretWord2 + '\'' +
+                ", secretWord3='" + secretWord3 + '\'' +
+                ", secretWord1confirmed='" + secretWord1confirmed + '\'' +
+                ", secretWord2confirmed='" + secretWord2confirmed + '\'' +
+                ", secretWord3confirmed='" + secretWord3confirmed + '\'' +
+                ", expiringAt=" + expiringAt +
+                '}';
+    }
 }
