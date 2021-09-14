@@ -27,8 +27,8 @@ INSERT INTO hospital.trusted_organization (country, city, organization, organiza
 
 
 
-INSERT INTO hospital.certificate (serial_number, ca_serial_number, is_ca, type, cert_file_path, key_store_file_path, trust_store_file_path, revoked, revoked_at, revoke_reason, issued_at, expiring_at) values
- ('1631229639199', '1631229639199', true, 0, 'src\main\resources\storage\ROOT\cert_1631229639199.pem', 'src\main\resources\storage\ROOT\keyStore_1631229639199.p12', 'src\main\resources\storage\ROOT\trustStore_1631229639199.p12', false, null, null, '2021-09-09 23:20:39','2022-09-09 23:20:39');
+INSERT INTO hospital.certificate (serial_number, ca_serial_number, is_ca, type, cert_file_path, key_store_file_path, trust_store_file_path, revoked, revoked_at, revoke_reason, issued_at, expiring_at, user_id) values
+ ('1631229639199', '1631229639199', true, 0, 'src\main\resources\storage\ROOT\cert_1631229639199.pem', 'src\main\resources\storage\ROOT\keyStore_1631229639199.p12', 'src\main\resources\storage\ROOT\trustStore_1631229639199.p12', false, null, null, '2021-09-09 23:20:39','2022-09-09 23:20:39', 1);
 
 
 INSERT INTO hospital.certificate_request (city, country, issuer_serial_number,organization, organization_unit,rejected_reason,status, user_id)

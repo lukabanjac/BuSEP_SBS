@@ -10,6 +10,7 @@ import rs.ac.uns.ftn.administratorappapi.model.Authority;
 import rs.ac.uns.ftn.administratorappapi.model.Doctor;
 import rs.ac.uns.ftn.administratorappapi.model.User;
 import rs.ac.uns.ftn.administratorappapi.repository.AuthorityRepository;
+import rs.ac.uns.ftn.administratorappapi.repository.TrustedOrganizationRepository;
 import rs.ac.uns.ftn.administratorappapi.repository.UserRepository;
 import rs.ac.uns.ftn.administratorappapi.service.UserService;
 import java.sql.Timestamp;
@@ -40,7 +41,7 @@ public class UserServiceImpl implements UserService {
                 user = new Doctor();
                 user.setPassword(userDto.getPassword());
                 authority = authorityRepository.findByName("ROLE_DOCTOR");
-                System.out.println(authority);
+
             }else{
                 throw new DataDTONotValidException("User type not valid!");
             }

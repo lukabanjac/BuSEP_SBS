@@ -226,8 +226,17 @@ public class CertificateServiceImpl implements CertificateService {
             organisationUnit = admin.getTrustedOrganization().getOrganizationUnit();
         }else  if(user.get() instanceof Doctor){
             Doctor doctor = (Doctor) user.get();
-            organisation = doctor.getTrusted_organization().getOrganization();
-            organisationUnit = doctor.getTrusted_organization().getOrganizationUnit();
+            System.out.println(doctor.toString());
+
+            TrustedOrganization trustedOrganization = trustedOrganizationRepository.getByOrganization(requestDTO.getOrganization());
+
+            organisation = "Vlada RS";
+            organisationUnit = "Ministarstvo Zdravlja";
+
+            //TODO: prebaci da se u registraciji postavi na neki nacin kojoj organizaciji pripada
+
+            //organisation = doctor.getTrusted_organization().getOrganization();
+            //organisationUnit = doctor.getTrusted_organization().getOrganizationUnit();
         }
 
 
@@ -247,6 +256,7 @@ public class CertificateServiceImpl implements CertificateService {
         cr.setStatus(CertificateRequestStatus.PENDING);
         cr.setUser(user.get());
 
+        System.out.println(cr);
         certificateRequestRepository.save(cr);
 
         return new MessageDTO(true, "Request was successfully sent :)");
