@@ -373,7 +373,7 @@ public class CertificateServiceImpl implements CertificateService {
         KeyPair keyPair;
         SubjectData subject;
         IssuerData issuer;
-
+        System.out.println("issuer: " + issuerSerialNumber);
         X509Certificate certificate;
 
         if (type == CertificateType.ROOT) {
