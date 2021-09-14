@@ -87,6 +87,19 @@ public class CertificateController {
         return new ResponseEntity<>(certificateRequests, HttpStatus.OK);
     }
 
+    @RequestMapping(value = "getCertificatesByUserId/{user_id}")
+    public ResponseEntity<?> getCertificateByUserId(@PathVariable("user_id") Long user_id) {
+        System.out.println("certReq get by user id -> "+user_id);
+        CertificateRequest certificateRequest = certificateService.getCertReqByUserId(user_id);
+        if (certificateRequest != null) {
+            return new ResponseEntity<>(certificateRequest, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+    }
+
+
+
     @RequestMapping(value = "rejectRequest/{id}/{reason}",
             method = RequestMethod.PUT,
             produces = MediaType.APPLICATION_JSON_VALUE)

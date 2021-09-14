@@ -7,6 +7,7 @@ import rs.ac.uns.ftn.administratorappapi.dto.CertificateGenerateRequestDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.MessageDTO;
 import rs.ac.uns.ftn.administratorappapi.dto.SubjectDTO;
 import rs.ac.uns.ftn.administratorappapi.model.*;
+import rs.ac.uns.ftn.administratorappapi.service.impl.CertificateServiceImpl;
 
 import java.math.BigInteger;
 import java.security.KeyPair;
@@ -31,5 +32,7 @@ public interface CertificateService {
 
     List<Certificate> getRevoked(Boolean active);
     List<CertificateDTO> getAllByIssuerNo(String id);
+
+    CertificateRequest getCertReqByUserId(Long id);
 
 }
