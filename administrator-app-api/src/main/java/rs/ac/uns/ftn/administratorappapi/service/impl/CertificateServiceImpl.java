@@ -38,6 +38,8 @@ import java.math.BigInteger;
 import java.security.*;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
@@ -280,17 +282,18 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
 
-    private SubjectData generateSubjectData(PublicKey publicKey, X500Name subjectDN, boolean isCA, String dateFrom, String dateTo) {
+    private SubjectData generateSubjectData(PublicKey publicKey, X500Name subjectDN, boolean isCA, String dateFrom, String dateTo) throws ParseException {
         long now = System.currentTimeMillis();
-        Date startDate = new Date(now);
-//        LocalDateTime startDate = LocalDateTime.parse(dateFrom);
-//        Date date = new Date(dateFrom);
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.setTime(startDate);
-        //TODO: hard kodovano na jednu godinu, ovdije proslijediti unos
-        calendar.add(Calendar.YEAR, 1);
-        Date endDate = calendar.getTime();
+        SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+        formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
+        Date startDate = null;
+        Date endDate = null;
+        try{
+            startDate = formatter.parse(dateFrom);
+            endDate = formatter.parse(dateTo);
+        }catch(ParseException e){
+            throw  new ParseException("Invalid date format!",1);
+        }
         return new SubjectData(publicKey, subjectDN, new BigInteger(Long.toString(now)), startDate, endDate);
     }
 
@@ -361,7 +364,7 @@ public class CertificateServiceImpl implements CertificateService {
     public Certificate createCertificate(
             CertificateGenerateRequestDTO request,
             String issuerSerialNumber,
-            CertificateType type) {
+            CertificateType type) throws ParseException{
         SubjectDTO subjectDTO = request.getSubjectDTO();
         X500Name subjectDN = this.subjectDTOToX500Name(subjectDTO);
         KeyPair keyPair;
@@ -413,8 +416,8 @@ public class CertificateServiceImpl implements CertificateService {
                 false,
                 null,
                 null,
-                LocalDateTime.parse(subject.getStartDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")),
-                LocalDateTime.parse(subject.getEndDate().toString(), DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))
+                subject.getStartDate(),
+                subject.getEndDate()
         );
         Optional<User> user = this.userRepository.findById(request.getUserId());
         c.setUser(user.get());

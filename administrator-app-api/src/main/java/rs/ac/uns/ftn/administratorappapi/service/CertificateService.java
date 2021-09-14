@@ -12,6 +12,7 @@ import java.math.BigInteger;
 import java.security.KeyPair;
 import java.security.PublicKey;
 import java.security.cert.X509Certificate;
+import java.text.ParseException;
 import java.util.List;
 
 @Service
@@ -25,7 +26,7 @@ public interface CertificateService {
     CertificateRequest rejectRequest(Long id, String reason);
     Certificate revokeCertificate(String serialNumber, String revokeReason);
     Certificate findBySerialNumber(String serialNumber);
-    Certificate createCertificate(CertificateGenerateRequestDTO request, String issuerSerialNumber, CertificateType type);
+    Certificate createCertificate(CertificateGenerateRequestDTO request, String issuerSerialNumber, CertificateType type) throws ParseException;
     MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO);
 
     List<Certificate> getRevoked(Boolean active);
