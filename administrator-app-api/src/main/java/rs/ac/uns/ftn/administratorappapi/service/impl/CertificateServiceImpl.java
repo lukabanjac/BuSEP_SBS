@@ -464,4 +464,9 @@ public class CertificateServiceImpl implements CertificateService {
         }
         return nameBuilder.build();
     }
+
+    @Override
+    public CertificateRequest getCertReqByUserId(Long id) {
+        return certificateRequestRepository.getByUserId(id);
+    }
 }

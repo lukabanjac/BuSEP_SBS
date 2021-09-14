@@ -10,6 +10,6 @@ import java.util.List;
 public interface CertificateRequestRepository extends JpaRepository<CertificateRequest, Long> {
 
 
-
+    CertificateRequest getByUserId(Long id);
     List<CertificateRequest> findByIssuerSerialNumber(String id);
 }
