@@ -48,8 +48,7 @@ public class TrustedOrganization {
     @JsonBackReference
     private Set<Device> devices = new HashSet<Device>();
 
-    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY, mappedBy = "trusted_organization")
-    @JsonBackReference
+    @OneToMany(cascade = CascadeType.REFRESH, fetch = FetchType.LAZY)
     private Set<Doctor> doctors = new HashSet<Doctor>();
 
     public TrustedOrganization() {

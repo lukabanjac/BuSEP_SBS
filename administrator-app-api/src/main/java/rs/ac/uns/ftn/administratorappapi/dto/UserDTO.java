@@ -13,6 +13,8 @@ public class UserDTO {
 
     private UserTypeDTO type;
 
+    private String organisationId;
+
     public UserDTO() {
     }
 
@@ -31,6 +33,14 @@ public class UserDTO {
         this.email = email;
         this.password = password;
         this.type = type;
+    }
+
+    public String getOrganisationId() {
+        return organisationId;
+    }
+
+    public void setOrganisationId(String organisationId) {
+        this.organisationId = organisationId;
     }
 
     public String getUsername() {

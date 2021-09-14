@@ -1,5 +1,6 @@
 INSERT INTO hospital.user_table (dtype, email, username, password, first_name, last_name, enabled, last_password_reset_date) values ('ADMIN','lukabanjac@gmail.com', 'luka', '$2a$10$b9ThKr7Ge.65AMY1v39mNO.Ah.kehgUt1CLcL0xkN4LPTM7omGaRy', 'Luka', 'Banjac', true, '2020-10-01 21:58:58.508');
 INSERT INTO hospital.user_table (dtype, email, username, password, first_name, last_name,  enabled, last_password_reset_date) values ('ADMIN','obicniadmin@gmail.com', 'nikola', '$2a$10$b9ThKr7Ge.65AMY1v39mNO.Ah.kehgUt1CLcL0xkN4LPTM7omGaRy', 'Nikola', 'Nikolic',  true, '2020-10-01 21:58:58.508');
+INSERT INTO hospital.user_table (dtype, email, username, password, first_name, last_name,  enabled, last_password_reset_date) values ('DOCTOR','doctor@gmail.com', 'milan', '$2a$10$daGUpNNSswb3J6CBUcCEnuUxwc2tWvAd760ho1ByFkyUUozFMXKYO', 'Milan', 'Milanovic',  true, '2020-10-01 21:58:58.508');
 
 INSERT INTO hospital.authority (name) values('ROLE_SUPERADMIN');
 INSERT INTO hospital.authority (name) values('ROLE_ADMIN');
@@ -12,6 +13,7 @@ INSERT INTO hospital.permission (name) values('hasCertificate');
 
 INSERT INTO hospital.user_authority (user_id, authority_id) values (1, 1);
 INSERT INTO hospital.user_authority (user_id, authority_id) values (2, 2);
+INSERT INTO hospital.user_authority (user_id, authority_id) values (3, 3);
 
 INSERT INTO hospital.user_permission (user_id, permission_id) values (1, 1);
 
@@ -33,5 +35,6 @@ INSERT INTO hospital.certificate (serial_number, ca_serial_number, is_ca, type, 
 
 INSERT INTO hospital.certificate_request (city, country, issuer_serial_number,organization, organization_unit,rejected_reason,status, user_id)
  values ('Beograd','Srb','1631229639199','Vlada RS','Ministarstvo Zdravlja',null,1,2);
+
 
 INSERT INTO hospital.device (id, name, certificate_id, trusted_organization_id) values (1, 'rengen', 1, 2);

@@ -94,7 +94,7 @@ public class CertificateController {
         if (certificateRequest != null) {
             return new ResponseEntity<>(certificateRequest, HttpStatus.OK);
         } else {
-            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(certificateRequest, HttpStatus.NO_CONTENT);
         }
     }
 

@@ -58,7 +58,7 @@ public class CertificateServiceImpl implements CertificateService {
     private CertificateRepository certificateRepository;
 
     @Autowired
-    private CertificateRequestRepository  certificateRequestRepository;
+    private CertificateRequestRepository certificateRequestRepository;
 
     @Autowired
     private TrustedOrganizationRepository trustedOrganizationRepository;
@@ -150,9 +150,9 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
 
-    public MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO){
+    public MessageDTO generateRequest(CertificateGenerateRequestDTO requestDTO) {
 
-        if(requestDTO.getIssuerSerialNumber().trim().equalsIgnoreCase("") ||
+        if (requestDTO.getIssuerSerialNumber().trim().equalsIgnoreCase("") ||
                 requestDTO.getCity().trim().equalsIgnoreCase("") ||
                 requestDTO.getCountry().trim().equalsIgnoreCase("") ||
                 requestDTO.getOrganization().trim().equalsIgnoreCase("") ||
@@ -161,7 +161,7 @@ public class CertificateServiceImpl implements CertificateService {
                 requestDTO.getSecretWord1().trim().equalsIgnoreCase("") ||
                 requestDTO.getSecretWord2().trim().equalsIgnoreCase("") ||
                 requestDTO.getSecretWord3().trim().equalsIgnoreCase("")
-        ){
+        ) {
             return new MessageDTO(false, "All fields must be filled!");
         }
 
@@ -169,14 +169,13 @@ public class CertificateServiceImpl implements CertificateService {
         Optional<Certificate> issuerCertificate = certificateRepository
                 .findBySerialNumber(requestDTO.getIssuerSerialNumber());
 
-        if(!issuerCertificate.isPresent()){
+        if (!issuerCertificate.isPresent()) {
             return new MessageDTO(false, "Invalid issuer serial number!");
         }
 
-        if(issuerCertificate.get().getType() == CertificateType.LEAF){
+        if (issuerCertificate.get().getType() == CertificateType.LEAF) {
             return new MessageDTO(false, "Invalid issuer certificate type!");
         }
-
 
 
         TrustedOrganization to = trustedOrganizationRepository
@@ -207,41 +206,39 @@ public class CertificateServiceImpl implements CertificateService {
         System.out.println(encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()));
         System.out.println(encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3()));
 
-        if(!encoder.matches(requestDTO.getSecretWord1(), to.getSecretWord1()) ||
-        !encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()) ||
-        !encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3())){
+        if (!encoder.matches(requestDTO.getSecretWord1(), to.getSecretWord1()) ||
+                !encoder.matches(requestDTO.getSecretWord2(), to.getSecretWord2()) ||
+                !encoder.matches(requestDTO.getSecretWord3(), to.getSecretWord3())) {
             return new MessageDTO(false, "Invalid secret words!");
 
         }
 
         Optional<User> user = this.userRepository.findById(requestDTO.getUserId());
-        if(!user.isPresent()){
+        if (!user.isPresent()) {
             return new MessageDTO(false, "User id not found");
         }
 
 
         String organisation = "";
         String organisationUnit = "";
-        if(user.get() instanceof  Admin){
+        if (user.get() instanceof Admin) {
             Admin admin = (Admin) user.get();
             organisation = admin.getTrustedOrganization().getOrganization();
             organisationUnit = admin.getTrustedOrganization().getOrganizationUnit();
-        }else  if(user.get() instanceof Doctor){
+        } else if (user.get() instanceof Doctor) {
             Doctor doctor = (Doctor) user.get();
             System.out.println(doctor.toString());
 
-            TrustedOrganization trustedOrganization = trustedOrganizationRepository.getByOrganization(requestDTO.getOrganization());
+//            TrustedOrganization trustedOrganization = trustedOrganizationRepository.getByOrganization(requestDTO.getOrganization());
 
-            organisation = "Vlada RS";
-            organisationUnit = "Ministarstvo Zdravlja";
+            organisation = doctor.getTrustedOrganization().getOrganization();
+            organisationUnit = doctor.getTrustedOrganization().getOrganizationUnit();
 
             //TODO: prebaci da se u registraciji postavi na neki nacin kojoj organizaciji pripada
 
             //organisation = doctor.getTrusted_organization().getOrganization();
             //organisationUnit = doctor.getTrusted_organization().getOrganizationUnit();
         }
-
-
 
 
         CertificateRequest cr = new CertificateRequest();
@@ -298,11 +295,11 @@ public class CertificateServiceImpl implements CertificateService {
         formatter.setTimeZone(java.util.TimeZone.getTimeZone("UTC"));
         Date startDate = null;
         Date endDate = null;
-        try{
+        try {
             startDate = formatter.parse(dateFrom);
             endDate = formatter.parse(dateTo);
-        }catch(ParseException e){
-            throw  new ParseException("Invalid date format!",1);
+        } catch (ParseException e) {
+            throw new ParseException("Invalid date format!", 1);
         }
         return new SubjectData(publicKey, subjectDN, new BigInteger(Long.toString(now)), startDate, endDate);
     }
@@ -311,10 +308,6 @@ public class CertificateServiceImpl implements CertificateService {
     public List<Certificate> getAll() {
         return certificateRepository.findAll();
     }
-
-
-
-
 
 
     @Override
@@ -328,7 +321,7 @@ public class CertificateServiceImpl implements CertificateService {
 
         // revoke top level certificate
         Certificate cert = opt.get();
-        if(cert.getType() != CertificateType.ROOT) {
+        if (cert.getType() != CertificateType.ROOT) {
             cert.setRevoked(true);
             cert.setRevokeReason(revokeReason);
             cert.setRevokedAt(now);
@@ -365,7 +358,7 @@ public class CertificateServiceImpl implements CertificateService {
     }
 
     @Override
-    public List<CertificateRequest> listCertificateRequestsByIssuerId(String id){
+    public List<CertificateRequest> listCertificateRequestsByIssuerId(String id) {
         List<CertificateRequest> list = this.certificateRequestRepository.findByIssuerSerialNumber(id);
         return list;
     }
@@ -374,7 +367,7 @@ public class CertificateServiceImpl implements CertificateService {
     public Certificate createCertificate(
             CertificateGenerateRequestDTO request,
             String issuerSerialNumber,
-            CertificateType type) throws ParseException{
+            CertificateType type) throws ParseException {
         SubjectDTO subjectDTO = request.getSubjectDTO();
         X500Name subjectDN = this.subjectDTOToX500Name(subjectDTO);
         KeyPair keyPair;
@@ -385,22 +378,20 @@ public class CertificateServiceImpl implements CertificateService {
 
         if (type == CertificateType.ROOT) {
             keyPair = generateKeyPair(true);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true,request.getDateFrom(),request.getDateTo());
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true, request.getDateFrom(), request.getDateTo());
             issuer = new IssuerData(keyPair.getPrivate(), subjectDN, subject.getPublicKey(), subject.getSerialNumber());
             certificate = generateCertificate(subject, issuer, true);
-        }
-        else if (type == CertificateType.INTERMEDIATE) {
+        } else if (type == CertificateType.INTERMEDIATE) {
             keyPair = generateKeyPair(true);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true,request.getDateFrom(),request.getDateTo());
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, true, request.getDateFrom(), request.getDateTo());
             System.out.println(subject.getSerialNumber());
             issuer = this.certificateStorage.getIssuerDataBySerialNumber(issuerSerialNumber);
             System.out.println(issuer.getSerialNumber());
             certificate = generateCertificate(subject, issuer, true);
-        }
-        else {
+        } else {
             keyPair = generateKeyPair(false);
             issuer = this.certificateStorage.getIssuerDataBySerialNumber(issuerSerialNumber);
-            subject = generateSubjectData(keyPair.getPublic(), subjectDN, false, request.getDateFrom(),request.getDateTo());
+            subject = generateSubjectData(keyPair.getPublic(), subjectDN, false, request.getDateFrom(), request.getDateTo());
             certificate = generateCertificate(subject, issuer, false);
         }
 
@@ -410,8 +401,8 @@ public class CertificateServiceImpl implements CertificateService {
         String[] filePathsOfDistributionFiles =
                 this.certificateStorage
                         .storeCertificateDistributionFiles(
-                            certificate.getSerialNumber().toString(),
-                            type);
+                                certificate.getSerialNumber().toString(),
+                                type);
 
 
         BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
@@ -434,7 +425,7 @@ public class CertificateServiceImpl implements CertificateService {
         System.out.println(c.getUser());
         certificateRepository.save(c);
 
-        if(c.getType() != CertificateType.ROOT){
+        if (c.getType() != CertificateType.ROOT) {
             CertificateRequest cr = certificateRequestRepository.findById(request.getCertificateRequestId()).get();
             cr.setStatus(CertificateRequestStatus.ACCEPTED);
             certificateRequestRepository.save(cr);
@@ -467,6 +458,6 @@ public class CertificateServiceImpl implements CertificateService {
 
     @Override
     public CertificateRequest getCertReqByUserId(Long id) {
-        return certificateRequestRepository.getByUserId(id);
+        return certificateRequestRepository.findByUserId(id);
     }
 }

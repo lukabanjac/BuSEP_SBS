@@ -2,10 +2,7 @@ package rs.ac.uns.ftn.administratorappapi.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
-import javax.persistence.DiscriminatorValue;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import java.sql.Timestamp;
 
 @Entity
@@ -13,8 +10,8 @@ import java.sql.Timestamp;
 public class Doctor extends User {
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JsonManagedReference
-    private TrustedOrganization trusted_organization;
+    @JoinColumn(name = "trusted_organization_id")
+    private TrustedOrganization trustedOrganization;
 
     public Doctor(){
         super();
@@ -24,11 +21,11 @@ public class Doctor extends User {
         super(username, firstName, lastName, email, password, lastPasswordResetDate);
     }
 
-    public TrustedOrganization getTrusted_organization() {
-        return trusted_organization;
+    public TrustedOrganization getTrustedOrganization() {
+        return trustedOrganization;
     }
 
-    public void setTrusted_organization(TrustedOrganization trusted_organization) {
-        this.trusted_organization = trusted_organization;
+    public void setTrustedOrganization(TrustedOrganization trustedOrganization) {
+        this.trustedOrganization = trustedOrganization;
     }
 }
