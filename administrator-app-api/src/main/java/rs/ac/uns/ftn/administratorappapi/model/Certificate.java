@@ -57,19 +57,14 @@ public class Certificate {
     @Column(name="revoke_reason")
     private String revokeReason;
 
+
     @Column(name="issued_at")
-    private LocalDateTime issuedAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date issuedAt;
 
     @Column(name="expiring_at")
-    private LocalDateTime expiringAt;
-
-//    @Column(name="issued_at")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private java.util.Date issuedAt;
-//
-//    @Column(name="expiring_at")
-//    @Temporal(TemporalType.TIMESTAMP)
-//    private java.util.Date expiringAt;
+    @Temporal(TemporalType.TIMESTAMP)
+    private java.util.Date expiringAt;
 
     @OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
     @JoinColumn(name = "user_id")
@@ -99,8 +94,8 @@ public class Certificate {
                        Boolean revoked,
                        Date revokedAt,
                        String revokeReason,
-                       LocalDateTime issuedAt,
-                       LocalDateTime expiringAt
+                       Date issuedAt,
+                       Date expiringAt
     )
     {
         this.serialNumber = serialNumber;
@@ -118,7 +113,7 @@ public class Certificate {
     }
 
 
-    public Certificate(Long id, String serialNumber, String caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, LocalDateTime issuedAt, LocalDateTime expiringAt) {
+    public Certificate(Long id, String serialNumber, String caSerialNumber, Boolean ca, CertificateType type, String certFilePath, String keyStoreFilePath, String trustStoreFilePath, Boolean revoked, Date revokedAt, String revokeReason, Date issuedAt, Date expiringAt) {
         this.id = id;
         this.serialNumber = serialNumber;
         this.caSerialNumber = caSerialNumber;
@@ -224,19 +219,19 @@ public class Certificate {
         this.revokeReason = revokeReason;
     }
 
-    public LocalDateTime getIssuedAt() {
+    public Date getIssuedAt() {
         return issuedAt;
     }
 
-    public void setIssuedAt(LocalDateTime issuedAt) {
+    public void setIssuedAt(Date issuedAt) {
         this.issuedAt = issuedAt;
     }
 
-    public LocalDateTime getExpiringAt() {
+    public Date getExpiringAt() {
         return expiringAt;
     }
 
-    public void setExpiringAt(LocalDateTime expiringAt) {
+    public void setExpiringAt(Date expiringAt) {
         this.expiringAt = expiringAt;
     }
 
